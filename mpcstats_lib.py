@@ -15,17 +15,17 @@ MAGIC_NUMBER = 999
 # Ref: https://github.com/data61/MP-SPDZ/blob/e93190f3b72ee2d27837ca1ca6614df6b52ceef2/doc/machine-learning.rst?plain=1#L347-L353
 sfix.round_nearest = True
 
-
-def read_data(party_index: int, num_columns: int, num_rows: int) -> Matrix:
-    """
-    Read data from each party's input file to a Matrix in MP-SPDZ circuit.
-    """
-    data = Matrix(num_columns, num_rows, sint)
-    # TODO: use @for_range_opt instead?
-    for i in range(num_columns):
-        for j in range(num_rows):
-            data[i][j] = sint.get_input_from(party_index)
-    return data
+# Not necessary, can use t.input_tensor_from(0, [2,4])
+# def read_data(party_index: int, num_columns: int, num_rows: int, t) -> Matrix:
+#     """
+#     Read data from each party's input file to a Matrix in MP-SPDZ circuit.
+#     """
+#     data = Matrix(num_columns, num_rows, t)
+#     # TODO: use @for_range_opt instead?
+#     for i in range(num_columns):
+#         for j in range(num_rows):
+#             data[i][j] = t.get_input_from(party_index)
+#     return data
 
 
 def print_data(data: Matrix):
@@ -41,7 +41,7 @@ def print_data(data: Matrix):
 
 # Top 5 functions to implement
 
-def mean(data: list[sint]):
+def mean(data: list[sfix]):
     total = sum(if_else(i != MAGIC_NUMBER, i, 0) for i in data)
     count = sum(if_else(i != MAGIC_NUMBER, 1, 0) for i in data)
     return total / count
@@ -68,7 +68,7 @@ def median(data: list[sint]):
     return (size%2)*median_odd + (1-size%2)*median_even
 
 
-def join(data1: Matrix, data2: Matrix, data1_column_index: int, data2_column_index: int) -> Matrix:
+def join(data1: Matrix, data2: Matrix, data1_column_index: int, data2_column_index: int, t) -> Matrix:
     """
     Join two matrices based on the matching index in the specified columns.
 
@@ -98,7 +98,7 @@ def join(data1: Matrix, data2: Matrix, data1_column_index: int, data2_column_ind
     num_columns_2 = data2.shape[0]
     num_rows_2 = data2.shape[1]
 
-    new_data = Matrix(num_columns_1 + num_columns_2, num_rows_1, sint)
+    new_data = Matrix(num_columns_1 + num_columns_2, num_rows_1, t)
     # Initialize the first part of the matrix with data1
     for i in range(num_columns_1):
         for j in range(num_rows_1):
