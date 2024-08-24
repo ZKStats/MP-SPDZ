@@ -132,10 +132,9 @@ def main():
         print_ln('giving output to any new reconnecting clients')
         @do_while
         def client_connections():
-            client_id, last = accept_client()
+            client_id = accept_client_connection(PORTNUM)
             sint.reveal_to_clients([client_id], [winning_client_id])
-
-
+            return True
         return True
 
     if n_rounds > 0:
