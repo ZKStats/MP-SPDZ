@@ -9,14 +9,14 @@ from domains import *
 
 client_id = int(sys.argv[1])
 n_parties = int(sys.argv[2])
-bonus = float(sys.argv[3])
-finish = int(sys.argv[4])
+isInput = int(sys.argv[3])
+bonus = int(sys.argv[4])
 
 client = Client(['localhost'] * n_parties, 14000, client_id)
 
 for socket in client.sockets:
     os = octetStream()
-    os.store(finish)
+    os.store(isInput)
     os.Send(socket)
 
 def run(x):

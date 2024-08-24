@@ -30,8 +30,8 @@ if len(program.args) > 2:
 
 def accept_client():
     client_socket_id = accept_client_connection(PORTNUM)
-    last = regint.read_from_socket(client_socket_id)
-    return client_socket_id, last
+    isInput = regint.read_from_socket(client_socket_id)
+    return client_socket_id, isInput
 
 def close_connections(number_clients):
     @for_range(number_clients)
@@ -86,55 +86,48 @@ def main():
         print_ln('Starting a new round of the game.')
 
         # Clients socket id (integer).
-        client_sockets = Array(MAX_NUM_CLIENTS, regint)
+        #client_sockets = Array(MAX_NUM_CLIENTS, regint)
         # Number of clients
         number_clients = MemValue(regint(0))
-        # Client ids to identity client
+        # Client ids to identify client
         client_ids = Array(MAX_NUM_CLIENTS, sint)
         # Keep track of received inputs
-        seen = Array(MAX_NUM_CLIENTS, regint)
-        seen.assign_all(0)
+        #seen = Array(MAX_NUM_CLIENTS, regint)
+        #seen.assign_all(0)
 
         winning_client_id = sint(99)
+        client_values = sint.Array(MAX_NUM_CLIENTS)
 
         # Loop round waiting for each client to connect
         @do_while
         def client_connections():
-            client_id, last = accept_client()
+            client_id, isInput = accept_client()
             @if_(client_id >= MAX_NUM_CLIENTS)
             def _():
                 print_ln('client id too high')
                 crash()
-            client_sockets[client_id] = client_id
             client_ids[client_id] = client_id
-            seen[client_id] = 1
-            @if_(last == 1)
+            
+            @if_e(isInput >0)
             def _():
+                print_ln('Store client inputs.. secret shared')
+                client_values[client_id] = client_input(sint, client_id)
+                print_ln('Now closing this connection')
+                closeclientconnection(client_id)
+                #print_ln('client_values: %s', client_values.reveal())
+                #print_ln('client_ids: %s', client_ids.reveal())
+                print_ln('Calculating New Winning ID.. ')
                 number_clients.write(client_id + 1)
-
-            return (sum(seen) < number_clients) + (number_clients == 0)
-
-        print_ln('Store client inputs.. secret shared')
-        client_values = sint.Array(MAX_NUM_CLIENTS)
-        @for_range_multithread(n_threads, 1, number_clients)
-        def _(client_id):
-            client_values[client_id] = client_input(sint, client_id)
-
-        print_ln('Closing Connection After getting Input')
-        close_connections(number_clients)
-
-        print_ln('Calculating Winning ID.. ')
-        winning_client_id = determine_winner(number_clients, client_values,
+            @else_
+            def _():
+                winning_client_id = determine_winner(number_clients, client_values,
                                                  client_ids)
-
-        print_ln('Found winner in, index: %s.', winning_client_id.reveal())
-
-        print_ln('giving output to any new reconnecting clients')
-        @do_while
-        def client_connections():
-            client_id = accept_client_connection(PORTNUM)
-            sint.reveal_to_clients([client_id], [winning_client_id])
+                sint.reveal_to_clients([client_id], [winning_client_id])
+                print_ln('Now closing this connection')
+                closeclientconnection(client_id)
+                
             return True
+
         return True
 
     if n_rounds > 0:
