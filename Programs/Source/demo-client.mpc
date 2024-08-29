@@ -1,6 +1,7 @@
 # coding: latin-1
 """
   Demo to show for DevCon, focusing on client interface, allowing clients to disconnect after giving inputs and reconnect to get output
+  while also allowing servers to store values
 """
 
 from Compiler.types import sint, regint, Array, MemValue
@@ -40,7 +41,7 @@ def determine_winner(number_clients, client_values):
         # Keep current winning client id
         win_client_id[0] = if_else(is_new_max, sint(i+1), win_client_id[0])
 
-    print_ln('maximum: %s', max_value[0].reveal())
+    #print_ln('maximum: %s', max_value[0].reveal())
     return win_client_id[0]
 
 
@@ -53,32 +54,48 @@ def main():
     number_clients = MemValue(regint(0))
 
     # put as array to make it object
-    winning_client_id = sint.Array(99)
+    winning_client_id = sint.Array(1)
     client_values = sint.Array(MAX_NUM_CLIENTS)
 
     # Loop round waiting for each client to connect
     @do_while
     def client_connections():
         client_id, isInput = accept_client()
+
         @if_(client_id >= MAX_NUM_CLIENTS)
         def _():
             print_ln('client id too high')
             crash()
-            
-        @if_e(isInput >0)
+        
+        # if client#0 gives special order (99), we store all existing client_values, and crash the servers to stop
+        # Note that this is first version, later version we can just save the client_values without crashing servers
+        @if_((isInput == 99)+(client_id==0)==2)
         def _():
+            print_ln('Saving all client_values array to file')
+            Array.write_to_file(client_values)
+            crash()
+        
+        @if_e(isInput == 1)
+        def _():
+            # Will not increase number_clients if same client_id, will just update the value
+            number_clients.write(number_clients + (client_id>=number_clients))
+
             print_ln('Store client inputs.. secret shared')
             client_values[client_id] = client_input(sint, client_id)
-            sint.write_to_file(client_values[client_id])
+
+            # Write to file, secret shared among servers 
+            #sint.write_to_file(client_values[client_id])
+
             print_ln('Now closing this connection')
             closeclientconnection(client_id)
+
             print_ln('Calculating New Winning ID.. ')
-            number_clients.write(number_clients + 1)
             winning_client_id[0] = determine_winner(number_clients, client_values)
         @else_
         def _():
             sint.reveal_to_clients([client_id], [winning_client_id[0]])
             closeclientconnection(client_id)
+       
         print_ln('num clients: %s', number_clients.reveal())
         return True
 
