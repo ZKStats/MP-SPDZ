@@ -10,10 +10,7 @@ import re
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import compile_computation
-from Compiler.library import print_ln
-from timeit import timeit
-from datetime import datetime
+from common_lib import execute_computation
 
 import argparse
 
@@ -36,4 +33,5 @@ def parse_args():
     return parser.parse_args()
 
 args = parse_args()
+
 

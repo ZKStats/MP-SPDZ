@@ -10,12 +10,14 @@ from Compiler.compilerLib import Compiler
 from Compiler.types import sfix
 import subprocess
 import config
+import os
+from typing import Callable, Any
 
 def compile_computation(
-    name,
-    computation,
-    cfg = config.DefaultMPSPDZSetting(),
-):
+    name: str,
+    computation: Callable[[], None],
+    cfg: Any = config.DefaultMPSPDZSetting(),
+) -> None:
     '''
     Compiles computation function and generates:
     - ./Programs/Schedules/{name}.sch
@@ -39,22 +41,30 @@ def compile_computation(
     sys.argv = bak
 
 def execute_computation(
-    computation,
-    num_parties,
-    mpc_script,
-    name,
-    cfg = config.DefaultMPSPDZSetting(),
-):
-    # compile program
+    computation: Callable[[], None],
+    num_parties: int    ,
+    mpc_script: str,
+    name: str,
+    cfg: Any = config.DefaultMPSPDZSetting(),
+) -> str:
     compile_computation(name, computation, cfg)
-
-    # execute program
     cmd = f'PLAYERS={num_parties} {mpc_script} {name}'
-
     try:
         res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
         return res.stdout
 
     except subprocess.CalledProcessError as e:
         raise Exception(f'Executing MPC failed ({e.returncode}): stdout: {e.stdout}, stderr: {e.stderr}')
+
+def execute_silently(f: Callable[[], None]) -> Any:
+    stdout_bak = sys.stdout
+
+    # redirect stdout to /dev/null
+    sys.stdout = open(os.devnull, 'w')
+
+    try:
+        return f()
+    finally:
+        sys.stdout.close()
+        sys.stdout = stdout_bak
 

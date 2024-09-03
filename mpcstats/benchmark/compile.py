@@ -11,7 +11,7 @@ import re
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import compile_computation
+from common_lib import compile_computation, execute_silently
 from Compiler.library import print_ln
 from timeit import timeit
 from datetime import datetime
@@ -43,6 +43,7 @@ def parse_args():
 
 args = parse_args()
 
+# load computation
 if args.file is None:
     computation_def = sys.stdin.read()
 else:
@@ -51,21 +52,14 @@ else:
 
 exec(computation_def)
 
+# compile the computation
 def f():
     compile_computation(args.name, computation)
 
-# compile the computation
-stdout_bak = sys.stdout
-if not args.verbose:
-    # suppress output from Compiler module
-    sys.stdout = open(os.devnull, 'w')
+def g():
+    return timeit(f, number=1)
 
-try:
-    time_elapsed = timeit(f, number=1)
-finally:
-    if not args.verbose:
-        sys.stdout.close()
-        sys.stdout = stdout_bak
+time_elapsed = g() if args.verbose else execute_silently(g)
 
 # build the json output and print
 prog_name_re = re.compile(rf'^{args.name}-\d+\.bc$')
