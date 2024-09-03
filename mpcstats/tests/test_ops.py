@@ -8,6 +8,7 @@ import pytest, statistics
 
 import mpcstats_lib
 from .lib import execute_elem_filter_test, execute_join_test, execute_stat_func_test, gen_player_data_for_1_param_func, gen_player_data
+from common_lib import execute_computation
 
 player_data_4x2_2_party = [
     # party 0

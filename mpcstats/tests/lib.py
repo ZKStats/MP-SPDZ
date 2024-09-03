@@ -10,9 +10,15 @@ from Compiler.library import print_ln
 from Compiler.compilerLib import Compiler
 from Compiler.types import sfix
 from mpcstats_lib import MAGIC_NUMBER, read_data
-import ast, glob, os, random, re, shutil, statistics, subprocess, sys
+import ast
+import glob
+import os
+import random
+import re
+import shutil
+import statistics
 from dataclasses import dataclass
-from common_lib import compile_computation
+from common_lib import execute_computation
 
 def load_to_matrices(player_data):
     return [read_data(i, len(p), len(p[0])) for i,p in enumerate(player_data)]
@@ -57,26 +63,6 @@ class DefaultMPSPDZConfig:
 
     # whole bit length of sfix. must be at least f+11
     k: int = 40
-
-def run_mpcstats_func(
-    computation,
-    num_parties,
-    mpc_script,
-    name,
-    cfg = DefaultMPSPDZConfig(),
-):
-    # compile program
-    compile_computation(name, computation, cfg)
-
-    # execute program
-    cmd = f'PLAYERS={num_parties} {mpc_script} {name}'
-
-    try:
-        res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
-        return res.stdout
-
-    except subprocess.CalledProcessError as e:
-        raise Exception(f'Executing MPC failed ({e.returncode}): stdout: {e.stdout}, stderr: {e.stderr}')
 
 def create_player_data_files(data_dir, player_data):
     # prepare an empty data dir
@@ -225,7 +211,7 @@ def execute_stat_func_test(
     protocol = 'semi'
     mpc_script = repo_root / 'Scripts' / f'{protocol}.sh'
     num_parties = len(player_data)
-    mpspdz_stdout = run_mpcstats_func(
+    mpspdz_stdout = execute_computation(
         computation,
         num_parties,
         mpc_script,
@@ -271,7 +257,7 @@ def execute_elem_filter_test(
     protocol = 'semi'
     mpc_script = repo_root / 'Scripts' / f'{protocol}.sh'
     num_parties = len(player_data)
-    mpspdz_stdout = run_mpcstats_func(
+    mpspdz_stdout = execute_computation(
         computation,
         num_parties,
         mpc_script,
@@ -306,7 +292,7 @@ def execute_join_test(
     mpc_script = repo_root / 'Scripts' / f'{protocol}.sh'
     print(f'mpc_script: {mpc_script}')
     num_parties = len(player_data)
-    mpspdz_stdout = run_mpcstats_func(
+    mpspdz_stdout = execute_computation(
         computation,
         num_parties,
         mpc_script,

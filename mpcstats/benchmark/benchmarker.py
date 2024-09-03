@@ -10,6 +10,7 @@ import subprocess
 import os
 import time
 from typing import List, Literal
+import json
 
 # TODO generate list from type definition
 MemoryFieldsType = Literal['sz', 'rss']
