@@ -12,6 +12,7 @@ from Compiler.types import sfix
 from mpcstats_lib import MAGIC_NUMBER, read_data
 import ast, glob, os, random, re, shutil, statistics, subprocess, sys
 from dataclasses import dataclass
+from common_lib import compile_computation
 
 def load_to_matrices(player_data):
     return [read_data(i, len(p), len(p[0])) for i,p in enumerate(player_data)]
@@ -61,21 +62,14 @@ def run_mpcstats_func(
     computation,
     num_parties,
     mpc_script,
-    prog,
+    name,
     cfg = DefaultMPSPDZConfig(),
 ):
-    def init_and_compute():
-        sfix.round_nearest = cfg.round_nearest
-        sfix.set_precision(cfg.f, cfg.k)
-        computation()
+    # compile program
+    compile_computation(name, computation, cfg)
 
-    # compile .x
-    compiler = Compiler()
-    compiler.register_function(prog)(init_and_compute)
-    compiler.compile_func()
-
-    # execute .x
-    cmd = f'PLAYERS={num_parties} {mpc_script} {prog}'
+    # execute program
+    cmd = f'PLAYERS={num_parties} {mpc_script} {name}'
 
     try:
         res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)

@@ -57,6 +57,7 @@ def f():
 # compile the computation
 stdout_bak = sys.stdout
 if not args.verbose:
+    # suppress output from Compiler module
     sys.stdout = open(os.devnull, 'w')
 
 try:
