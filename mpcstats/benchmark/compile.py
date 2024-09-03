@@ -6,6 +6,7 @@ mpcstats_dir = repo_root / 'mpcstats'
 benchmark_dir = mpcstats_dir / 'benchmark'
 
 import sys
+import os
 import re
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
@@ -14,8 +15,8 @@ from common_lib import compile_computation
 from Compiler.library import print_ln
 from timeit import timeit
 from datetime import datetime
-
 import argparse
+import json
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Compile script')
@@ -26,6 +27,11 @@ def parse_args():
         type=str,
         default=f'computation',
         help='Name of the computation',
+    )
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        help='Show output from Comipler module',
     )
     parser.add_argument(
         '--file',
@@ -48,17 +54,32 @@ exec(computation_def)
 def f():
     compile_computation(args.name, computation)
 
-# print compilation time
-time_elapsed = timeit(f, number=1)
-print(f'Compilation Time: {time_elapsed}')
+# compile the computation
+stdout_bak = sys.stdout
+if not args.verbose:
+    sys.stdout = open(os.devnull, 'w')
 
-# print compiled bytecodes with size 
+try:
+    time_elapsed = timeit(f, number=1)
+finally:
+    if not args.verbose:
+        sys.stdout.close()
+        sys.stdout = stdout_bak
+
+# build the json output and print
 prog_name_re = re.compile(rf'^{args.name}-\d+\.bc$')
 bytecode_dir = benchmark_dir / 'Programs' / 'Bytecode'
 
 files = [
-    (file.name, file.stat().st_size) for file
+    { 'name': file.name, 'size': file.stat().st_size } for file
     in bytecode_dir.rglob(f'{args.name}-*.bc')
     if prog_name_re.match(file.name)
 ]
-print(f'Bytecodes: {files}')
+
+output = {
+    'compilation_time': time_elapsed,
+    'bytecodes': files,
+}
+
+print(json.dumps(output))
+

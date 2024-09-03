@@ -1,5 +1,5 @@
 from pathlib import Path
-repo_root = Path(__file__).parent.parent
+repo_root = Path(__file__).parent.parent.parent
 
 import sys
 sys.path.append(str(repo_root))
