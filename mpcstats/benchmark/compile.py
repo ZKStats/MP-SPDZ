@@ -17,8 +17,9 @@ from timeit import timeit
 from datetime import datetime
 import argparse
 import json
+from typing import Any
 
-def parse_args():
+def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Compile script')
     now = datetime.now().strftime('%Y%m%d_%H%M%S')
 
@@ -43,14 +44,16 @@ def parse_args():
 
 args = parse_args()
 
-# load computation
+# inject computation script
 if args.file is None:
-    computation_def = sys.stdin.read()
+     script = sys.stdin.read()
 else:
-    computation_def = args.file.read()
-    args.file.close()
-
-exec(computation_def)
+    # assumes that args.file is already opened
+    try:
+        script  = args.file.read()
+    finally:
+        args.file.close()
+exec(script)
 
 # compile the computation
 def f():
@@ -72,6 +75,7 @@ files = [
 ]
 
 output = {
+    'program_name': args.name,
     'compilation_time': time_elapsed,
     'bytecodes': files,
 }

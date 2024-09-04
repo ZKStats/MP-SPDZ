@@ -11,13 +11,11 @@ import os
 import time
 from typing import List, Literal
 import json
+from common_lib import Protocols, ProtocolsType
 
 # TODO generate list from type definition
 MemoryFieldsType = Literal['sz', 'rss']
 MemoryFields = ['sz', 'rss']
-
-ProtocolsType = Literal['semi', 'mascot']
-Protocols = ['semi', 'mascot']
 
 os.environ['PATH'] += os.pathsep + str(benchmark_dir)
 page_size = os.sysconf("SC_PAGE_SIZE")  # in bytes
@@ -70,7 +68,7 @@ def parse_args():
         'protocol',
         type=str, 
         choices=Protocols, 
-        help='MPC protocol")',
+        help='MPC protocol',
     )
     parser.add_argument(
         'mem-get-sleep',

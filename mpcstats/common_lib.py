@@ -8,10 +8,15 @@ sys.path.append(f'{repo_root}/mpcstats')
 
 from Compiler.compilerLib import Compiler
 from Compiler.types import sfix
+from Compiler.library import print_ln
 import subprocess
 import config
 import os
-from typing import Callable, Any
+from typing import Callable, Any, Literal
+
+# TODO generate list from type definition
+ProtocolsType = Literal['semi', 'mascot']
+Protocols = ['semi', 'mascot']
 
 def compile_computation(
     name: str,
@@ -41,13 +46,10 @@ def compile_computation(
     sys.argv = bak
 
 def execute_computation(
-    computation: Callable[[], None],
-    num_parties: int    ,
+    num_parties: int,
     mpc_script: str,
     name: str,
-    cfg: Any = config.DefaultMPSPDZSetting(),
 ) -> str:
-    compile_computation(name, computation, cfg)
     cmd = f'PLAYERS={num_parties} {mpc_script} {name}'
     try:
         res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
@@ -68,3 +70,5 @@ def execute_silently(f: Callable[[], None]) -> Any:
         sys.stdout.close()
         sys.stdout = stdout_bak
 
+def write_result(value: Any) -> None:
+    print_ln('Result: %s', value)

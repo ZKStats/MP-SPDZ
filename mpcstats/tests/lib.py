@@ -18,7 +18,7 @@ import re
 import shutil
 import statistics
 from dataclasses import dataclass
-from common_lib import execute_computation
+from common_lib import compile_computation, execute_computation
 
 def load_to_matrices(player_data):
     return [read_data(i, len(p), len(p[0])) for i,p in enumerate(player_data)]
@@ -51,18 +51,6 @@ def gen_stat_func_comp(
 
     else:
         raise Exception(f'# of func params is expected to be 1 or 2, but got {num_params}')
-
-@dataclass
-class DefaultMPSPDZConfig:
-    # To enforce round to the nearest integer, instead of probabilistic truncation
-    # Ref: https://github.com/data61/MP-SPDZ/blob/e93190f3b72ee2d27837ca1ca6614df6b52ceef2/doc/machine-learning.rst?plain=1#L347-L353
-    round_nearest: bool = True
-
-    # length of the decimal part of sfix
-    f: int = 22
-
-    # whole bit length of sfix. must be at least f+11
-    k: int = 40
 
 def create_player_data_files(data_dir, player_data):
     # prepare an empty data dir
@@ -211,11 +199,12 @@ def execute_stat_func_test(
     protocol = 'semi'
     mpc_script = repo_root / 'Scripts' / f'{protocol}.sh'
     num_parties = len(player_data)
+    name = 'test_mpcstats'
+    compile_computation(name, computation)
     mpspdz_stdout = execute_computation(
-        computation,
         num_parties,
         mpc_script,
-        'testmpc',
+        name,
     )
     print(f'stdout:{mpspdz_stdout}')
     mpspdz_res = extract_result_from_mpspdz_stdout(mpspdz_stdout)
@@ -257,11 +246,12 @@ def execute_elem_filter_test(
     protocol = 'semi'
     mpc_script = repo_root / 'Scripts' / f'{protocol}.sh'
     num_parties = len(player_data)
+    name = 'test_mpcstats'
+    compile_computation(name, computation)
     mpspdz_stdout = execute_computation(
-        computation,
         num_parties,
         mpc_script,
-        'testmpc',
+        name,
     )
     mpspdz_res = extract_result_from_mpspdz_stdout(mpspdz_stdout)
     mpspdz_res_val = ast.literal_eval(mpspdz_res) 
@@ -292,11 +282,12 @@ def execute_join_test(
     mpc_script = repo_root / 'Scripts' / f'{protocol}.sh'
     print(f'mpc_script: {mpc_script}')
     num_parties = len(player_data)
+    name = 'test_mpcstats'
+    compile_computation(name, computation)
     mpspdz_stdout = execute_computation(
-        computation,
         num_parties,
         mpc_script,
-        'testmpc',
+        name,
     )
     mpspdz_res = extract_result_from_mpspdz_stdout(mpspdz_stdout)
     mpspdz_res_val = ast.literal_eval(mpspdz_res) 
