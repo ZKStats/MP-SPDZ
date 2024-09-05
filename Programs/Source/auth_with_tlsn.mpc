@@ -1,0 +1,58 @@
+from Compiler.types import sint
+from Compiler.library import print_ln
+
+
+NUM_REDACTED_BYTES = 12
+WORD_SIZE = 16
+WORDS_PER_LABEL = 8
+
+COMMITMENT_HASH_SIZE = 32
+
+
+# FIXME: this is not the correct formula
+def calculate_commitments(followers, delta, encoding):
+    # `followers` is "Data" and `encoding` is the "Full Encoding"
+    # Active coding is calculated from `followers` and `encoding`.
+    # Ref:
+    #   - docs: https://docs.tlsnotary.org/mpc/commitments.html#commitments
+    #   - code: https://github.com/tlsnotary/tlsn/blob/e14d0cf563e866cde18d8cf7a79cfbe66d220acd/crates/core/src/commitment/blake3.rs#L76-L80
+    # FIXME: this is not the correct formula
+    # return hash(followers + delta + encoding)
+    return [followers] * COMMITMENT_HASH_SIZE
+
+
+def read_inputs(party_id: int):
+    followers = sint.get_input_from(party_id)
+    delta = [sint.get_input_from(party_id) for _ in range(WORD_SIZE)]
+    zero_encodings = []
+    for i in range(NUM_REDACTED_BYTES):
+        zero_encodings.append([])
+        for j in range(WORDS_PER_LABEL):
+            zero_encodings[i].append([])
+            for k in range(WORD_SIZE):
+                zero_encodings[i][j].append(sint.get_input_from(party_id))
+    return followers, delta, zero_encodings
+
+
+followers_0, delta_0, zero_encodings_0 = read_inputs(0)
+followers_1, delta_1, zero_encodings_1 = read_inputs(1)
+followers_2, delta_2, zero_encodings_2 = read_inputs(2)
+
+commitments_0 = calculate_commitments(followers_0, delta_0, zero_encodings_0)
+commitments_1 = calculate_commitments(followers_1, delta_1, zero_encodings_1)
+commitments_2 = calculate_commitments(followers_2, delta_2, zero_encodings_2)
+
+avg_followers = (followers_0 + followers_1 + followers_2) / 3
+
+print_ln("output: avg_followers=%s", avg_followers.reveal())
+print_ln("output: encoding_0=%s", [[[element.reveal() for element in word] for word in label] for label in zero_encodings_0])
+print_ln("output: encoding_1=%s", [[[element.reveal() for element in word] for word in label] for label in zero_encodings_1])
+print_ln("output: encoding_2=%s", [[[element.reveal() for element in word] for word in label] for label in zero_encodings_2])
+
+print_ln("output: delta_0=%s", [d.reveal() for d in delta_0])
+print_ln("output: delta_1=%s", [d.reveal() for d in delta_1])
+print_ln("output: delta_2=%s", [d.reveal() for d in delta_2])
+
+print_ln("output: commitments_0=%s", [c.reveal() for c in commitments_0])
+print_ln("output: commitments_1=%s", [c.reveal() for c in commitments_1])
+print_ln("output: commitments_2=%s", [c.reveal() for c in commitments_2])
