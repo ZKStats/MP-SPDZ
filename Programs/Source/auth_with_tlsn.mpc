@@ -10,7 +10,7 @@ COMMITMENT_HASH_SIZE = 32
 
 
 # FIXME: this is not the correct formula
-def calculate_commitments(followers, delta, encoding):
+def calculate_commitments(followers, delta, encoding, nonce):
     # `followers` is "Data" and `encoding` is the "Full Encoding"
     # Active coding is calculated from `followers` and `encoding`.
     # Ref:
@@ -23,6 +23,7 @@ def calculate_commitments(followers, delta, encoding):
 
 def read_inputs(party_id: int):
     followers = sint.get_input_from(party_id)
+    nonce = [sint.get_input_from(party_id) for _ in range(COMMITMENT_HASH_SIZE)]
     delta = [sint.get_input_from(party_id) for _ in range(WORD_SIZE)]
     zero_encodings = []
     for i in range(NUM_REDACTED_BYTES):
@@ -31,20 +32,23 @@ def read_inputs(party_id: int):
             zero_encodings[i].append([])
             for k in range(WORD_SIZE):
                 zero_encodings[i][j].append(sint.get_input_from(party_id))
-    return followers, delta, zero_encodings
+    return followers, nonce, delta, zero_encodings
 
 
-followers_0, delta_0, zero_encodings_0 = read_inputs(0)
-followers_1, delta_1, zero_encodings_1 = read_inputs(1)
-followers_2, delta_2, zero_encodings_2 = read_inputs(2)
+followers_0, nonce_0, delta_0, zero_encodings_0 = read_inputs(0)
+followers_1, nonce_1, delta_1, zero_encodings_1 = read_inputs(1)
+followers_2, nonce_2, delta_2, zero_encodings_2 = read_inputs(2)
 
-commitments_0 = calculate_commitments(followers_0, delta_0, zero_encodings_0)
-commitments_1 = calculate_commitments(followers_1, delta_1, zero_encodings_1)
-commitments_2 = calculate_commitments(followers_2, delta_2, zero_encodings_2)
+commitments_0 = calculate_commitments(followers_0, delta_0, zero_encodings_0, nonce_0)
+commitments_1 = calculate_commitments(followers_1, delta_1, zero_encodings_1, nonce_1)
+commitments_2 = calculate_commitments(followers_2, delta_2, zero_encodings_2, nonce_2)
 
 avg_followers = (followers_0 + followers_1 + followers_2) / 3
 
 print_ln("output: avg_followers=%s", avg_followers.reveal())
+print_ln("output: nonce_0=%s", [n.reveal() for n in nonce_0])
+print_ln("output: nonce_1=%s", [n.reveal() for n in nonce_1])
+print_ln("output: nonce_2=%s", [n.reveal() for n in nonce_2])
 print_ln("output: encoding_0=%s", [[[element.reveal() for element in word] for word in label] for label in zero_encodings_0])
 print_ln("output: encoding_1=%s", [[[element.reveal() for element in word] for word in label] for label in zero_encodings_1])
 print_ln("output: encoding_2=%s", [[[element.reveal() for element in word] for word in label] for label in zero_encodings_2])

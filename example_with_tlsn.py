@@ -57,6 +57,8 @@ def prepare_player_data(proofs: list[TLSNProof]):
         party_data_file = PARTY_DATA_DIR / f"Input-P{i}-0"
         with open(party_data_file, "w") as f_data:
             f_data.write(f"{proof.followers}\n")
+            data_commitment = tuple(proof.data_commitments.values())[0]
+            f_data.write(f"{" ".join(map(str, data_commitment.nonce))}\n")
 
             with open(proof.proof_path, "r") as f_proof:
                 proof_data = json.load(f_proof)
@@ -106,7 +108,11 @@ def generate_tlsn_proofs() -> list[TLSNProof]:
                 data_commitment_nonce = commitment["nonce"]
                 data_commitments[commitment_index] = DataCommitment(hash=data_commitment_hash, nonce=data_commitment_nonce)
         proofs.append(
-            TLSNProof(followers=followers, proof_path=proof_file, data_commitments=data_commitments)
+            TLSNProof(
+                followers=followers,
+                proof_path=proof_file,
+                data_commitments=data_commitments
+            )
         )
     return proofs
 
