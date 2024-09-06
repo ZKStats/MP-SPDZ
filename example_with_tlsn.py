@@ -185,13 +185,14 @@ def verify_tlsn_proofs(proofs: list[TLSNProof], commitments_mpspdz: list[int]):
 
 
 def main():
-    # proofs = generate_tlsn_proofs()
-    # print(f"Proofs: {proofs}")
-    proofs = [
-        TLSNProof(followers=3, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='2501fa5c2b50281d97cc4e63bb1beaef', zero_encodings=['b51d9f6c1d7133a3c2d307b431c7f3ea', '2842eaaf492880247548f2cb189c2f5b', 'f1844ae7b20ad935605c87878b0ffb96', 'd19b84012adf53dedc896ebb36f7decd', 'e9629218d15b7d0887ffa78c4c70d237', 'd7ce38f06c1b134f30ee3dcd5c947d54', '7e666304dbc6c6a48d270c6d4c71f789', '62a1e68e06fd1d02adeb3646cfb47601'], hash='dc249d3704656445a729cc36e39a2f62900fd24f79d20d0dc6f30a5f22ef8f06', nonce='2a0ffcbec6f9338b582694ed46504445e59f3159ad6b7cb035325450ccb31213'),
-        TLSNProof(followers=7, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='373649df4ba763efb80393526cd8914a', zero_encodings=['4072e2f7e1c271086b4e73ddfd01f55a', '9de71f0bc983a30a4f4d48e21e8202a5', '5abfda4890938dc295bde881e309e8ca', 'c03b03d33cf9f21d110c85c4e76b957c', 'b38ce9704025ed2dede2a17d878a207e', 'ff676722a58d98742644268c05abe19d', '02ee533f359a03c45302b2e1cf529b9f', '27b057b471aa76641263e71c82526310'], hash='9b1d8da9d318e47f0350ff28a517e082083b3cd230dd846c87c85998612c50bf', nonce='d25f6e5bb66954b8765ee15ce9b76eee77567f1c5d9254aeeacf4ba013a58ff6'),
-        TLSNProof(followers=8, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='a933d0765b313d91d518bda095977f78', zero_encodings=['4b88931361b0b69fa573e18995f84042', '659d0fc74b3a8fe2baa71f5917c20c16', 'de0c378c7ae34171fff72a8bf5c93ad2', '554f1ed3f33d8c522988407d6d6f84d1', '71413cfa8f91380a0edc510a93e07fca', '26eb86d3c2fa2187be7087f17233ebbb', '3db5b599d6b8590693ffda5f4a2be9bb', '06462ccd3c5e11b7839053b4b9860409'], hash='5f8f1b8aaee66105cd5f29c65f85448e5e6e8f4a76a1c22dc619cffd09fd3666', nonce='451fa29db39b2ede357f10011b1d5957fa2ceca56ff6ac83b75c68f75340da99')
-    ]
+    print("Generating TLSN proofs for parties...")
+    proofs = generate_tlsn_proofs()
+    print(f"Proofs: {proofs}")
+    # proofs = [
+    #     TLSNProof(followers=3, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='2501fa5c2b50281d97cc4e63bb1beaef', zero_encodings=['b51d9f6c1d7133a3c2d307b431c7f3ea', '2842eaaf492880247548f2cb189c2f5b', 'f1844ae7b20ad935605c87878b0ffb96', 'd19b84012adf53dedc896ebb36f7decd', 'e9629218d15b7d0887ffa78c4c70d237', 'd7ce38f06c1b134f30ee3dcd5c947d54', '7e666304dbc6c6a48d270c6d4c71f789', '62a1e68e06fd1d02adeb3646cfb47601'], hash='dc249d3704656445a729cc36e39a2f62900fd24f79d20d0dc6f30a5f22ef8f06', nonce='2a0ffcbec6f9338b582694ed46504445e59f3159ad6b7cb035325450ccb31213'),
+    #     TLSNProof(followers=7, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='373649df4ba763efb80393526cd8914a', zero_encodings=['4072e2f7e1c271086b4e73ddfd01f55a', '9de71f0bc983a30a4f4d48e21e8202a5', '5abfda4890938dc295bde881e309e8ca', 'c03b03d33cf9f21d110c85c4e76b957c', 'b38ce9704025ed2dede2a17d878a207e', 'ff676722a58d98742644268c05abe19d', '02ee533f359a03c45302b2e1cf529b9f', '27b057b471aa76641263e71c82526310'], hash='9b1d8da9d318e47f0350ff28a517e082083b3cd230dd846c87c85998612c50bf', nonce='d25f6e5bb66954b8765ee15ce9b76eee77567f1c5d9254aeeacf4ba013a58ff6'),
+    #     TLSNProof(followers=8, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='a933d0765b313d91d518bda095977f78', zero_encodings=['4b88931361b0b69fa573e18995f84042', '659d0fc74b3a8fe2baa71f5917c20c16', 'de0c378c7ae34171fff72a8bf5c93ad2', '554f1ed3f33d8c522988407d6d6f84d1', '71413cfa8f91380a0edc510a93e07fca', '26eb86d3c2fa2187be7087f17233ebbb', '3db5b599d6b8590693ffda5f4a2be9bb', '06462ccd3c5e11b7839053b4b9860409'], hash='5f8f1b8aaee66105cd5f29c65f85448e5e6e8f4a76a1c22dc619cffd09fd3666', nonce='451fa29db39b2ede357f10011b1d5957fa2ceca56ff6ac83b75c68f75340da99')
+    # ]
     prepare_player_data(proofs)
 
     # MP-SPDZ circuit
@@ -250,8 +251,9 @@ def main():
         commitment_1.reveal_print_hex()
         commitment_2.reveal_print_hex()
 
-
+    print("Running MP-SPDZ circuit...")
     avg_followers, commitments_mpsdz = compile_run(computation)
+    print("Verifying TLSN proofs...")
     verify_tlsn_proofs(proofs, commitments_mpsdz)
     print("\n\n\nTLSN proofs verified successfully and matched with MP-SPDZ output")
     print(f"Average followers: {avg_followers}")
