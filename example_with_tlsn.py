@@ -90,13 +90,13 @@ def generate_tlsn_proofs() -> list[TLSNProof]:
 
             encodings = proof_data["encodings"]
             assert len(encodings) == NUM_REDACTED_BYTES, f"Expected {NUM_REDACTED_BYTES} bytes in encodings, got {len(encodings)}"
+            all_labels = []
             for e in encodings:
                 delta = e["U8"]["state"]["delta"]
                 labels = e["U8"]["labels"]
                 assert len(delta) == WORD_SIZE, f"Expected {WORD_SIZE} bytes in delta, got {len(delta)}"
                 delta_hex = bytes(delta).hex()
                 assert len(labels) == WORDS_PER_LABEL, f"Expected {WORDS_PER_LABEL} labels, got {len(labels)}"
-                all_labels = []
                 for l in labels:
                     assert len(l) == WORD_SIZE, f"Expected {WORD_SIZE} bytes in label, got {len(l)}"
                     label_hex = bytes(l).hex()
@@ -120,10 +120,6 @@ def compile_run(computation):
     compiler.register_function(CIRCUIT_NAME)(computation)
     compiler.compile_func()
 
-    # check if the circuit file exists
-    # circuit_file = MPSPDZ_CIRCUIT_DIR / f"{CIRCUIT_NAME}.mpc"
-    # if not circuit_file.exists():
-    #     raise FileNotFoundError(f"Circuit file {circuit_file} not found")
     try:
         command = f"PLAYERS={NUM_PARTIES} {LOCAL_RUN} {CIRCUIT_NAME}"
         print(f"Running command: {command}")
@@ -188,9 +184,9 @@ def main():
     # proofs = generate_tlsn_proofs()
     # print(f"Proofs: {proofs}")
     proofs = [
-        TLSNProof(followers=10, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='d36d53dada9156e0b06758f143623839', zero_encodings=['0386109eea524dd7c70ddeed7c4978ba', '0b88173f5667ff26ae9258fde0eff735', '5e9781f88c98d8a09089710c075e9c09', 'd42d2ce9e55ef14b9d6b5cf8fc669ded', 'aa212f7c88c954c84e13405b1ca2af10', '3d9f3ce5cca1cbc27826909a9e70d930', 'a50050ff300f9dee6cf902d66e13cf14', '50b216bb1ec747a9951b06e4bc9bffe5'], hash='fdad7b9374ca5843d5364b3c3d7ea680d3bce0ad85daba93ec60735bbd109c47', nonce='8ee24f0a12c839cca607dd825cb0ed02e8ef5c3682537279bdc59aefa05b19c7'),
-        TLSNProof(followers=14, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='29c5b16b2a8a90c74f621658b42d9d99', zero_encodings=['0114f9b7900a22442dd6b365c595dba9', 'cc9ed62bf7a91898d8ed77f7fb4befda', '9f20bfb2baddc0cbd3326b0cb97ed9b6', '1fd3bccb52ed35abca50581f6cead317', '21c03c26a5e0dee2e4000fbfe55e6993', '41d119aff4a2863c72dc1f9861017ed7', '94ebde1268dcf501c9680af1867fbbc0', 'c57dbd7901751f07c0a368c938a34093'], hash='8f3a3d8cbf6041c80b0d30751439d9f4be583dcff1b1f0090905c72d4daeccc0', nonce='75ed4c01732977f9e150ad013233665458d2aaf408528199a37b2dce923973c4'),
-        TLSNProof(followers=21, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='1735ee5903a44adbc1a48ea4d74fc352', zero_encodings=['13decd93e09d1ce104e8fe220c427313', 'b3cefbca0b171b32bc81330bb85f1a48', 'cbf6a9afa99e72a816b667e979a6128f', '3b15fe00aca04319535f92e1bc8f21df', '9feb755b737f4205da6dc739332e60f1', '12d34a49f87f9d9355f55c145eade67a', 'd90c7943cb1f18056c17fcc0d4477d2b', '3b1ba36d14c05597115b0cb79bc40b21'], hash='711bab8b9684d3493ac8775d9ca29dd407c9d080f9094b9a188a69a333038e2f', nonce='7507b6c2576c6ffd445cec7bcdc6a1b2b0264b1f74fbfb71125b4a3c20d7a75b'),
+        TLSNProof(followers=10, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='d1ec7d44024e435443a80ef42a6d59d0', zero_encodings=['eb0ff64e6d184cc300ccdede9980c52a', 'c3e21f5970827e42bf7b1931af085653', '036fb7183f6d204a91cc8d97e9a792c9', '09556a664cb4368d373b20b090e5dbd0', '3276862953633172a258263a1f3a52f5', 'b34929ece0fe3652d354c70ddae7c11e', 'c4a3e44b801555136aa90489f4ca4442', '3270ab170f3366f73d78429216d97875', 'ab1cbc3d45bab23ed57d4f1113b61351', 'ad7bc80a3a9719e5356d0b8e55a2b7da', '9bc162080e85071281bb6971ede5497e', '40c27ba571b12f2ae791f5217ed485b1', '393022347ae48bedd7244a31f6ac02e3', '104317fbf0eca460f7a77c3581968cb7', 'd7b72674b0282c1747ccf7bfcefd7c8a', '863954ffefe6ee363d5310dcd315278a'], hash='798d05beb4d1e95eadf7c0d7fe47ba11fc674660d626ab2f5f35b3e323e03b47', nonce='42584f2289e56d7d93f6cdd3c0c316d1167b8f9bbf3c5de11ed906a14a331d43'),
+        TLSNProof(followers=14, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='a7c391edf3b2b1a0828fc421628d924b', zero_encodings=['f540d6b1be084f1d18d6ddbbd0aa07b8', '0bd7fc981e6bb0e15a7fbc67451ee90f', '63b14f774eb29b25f8b64408d6381b96', 'bd3c0cc08a8bbae0b43fd281541d9025', '40903ab18e7ecbe93e37351241090a7a', '8968b757b4d83b6b0bb08c05331f6047', '8e75d69d2f624eaf4ca5de3994ed3196', '8cabb249ba300120533d8dbd80c9f5ef', '498835c3fe12ccc525bca5b5498532af', '8171425dd53a28215188d7d91bde0139', '0349a6ab30ac0ffefdfd1a08e3ce7747', 'd89204f80f615abb794a790c70ec7f3a', '782ac40e3e08f0a05971a07ebb221474', '343f6bd76ad31cff3f4a51ee2c67eb0f', '5d289b15cf6e10b8de8746a2230c2271', '6b15c1291ad2afc1135d27351170770d'], hash='52cbf3ae8280eee9bf06cc58d2514055418b36943333a8d9851d66049872c1ef', nonce='82cad1a53873655667818ced06cf09012c90ccdc978597b0555fb7bacebcbdb5'),
+        TLSNProof(followers=21, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='bd26e7427cc43c77258cf3bf23b67da1', zero_encodings=['dc9fe9e2780636a1ab70bf03c0188408', 'f878d6081dd9eea10437477a9657b6c8', 'f83da2fd15d956a983aa59219f06d6b3', '23ceed47af186dc6f3dfcd03c93e0c59', '83932885a0193ebba68bb214c4e6ce72', '5e11011b5ec62f2e3b08a7d820c3e8e0', 'bd786e4b69a444867022da6520814681', '0ec83595f88c5685da4aa512edbd5d97', '585b0a699a0be042f6de662e22ce2013', '917d7d7d07a0ffe724fc807069424c21', 'bb688ebe22dd4cc8e3ba9b85a6ef5d06', '25caa422aa10defd9d0141ba52c9e6f6', '96dd9c33b8fd8a90fc0585628fa23225', '68ad054d4bd78d2059f54f6604d7cb43', '60bf0a2c4e449de2c75cc4019b3333e7', 'e37ec97d05a5f3ce78bd07ed13fcb73c'], hash='b653e141df4f4d2ed3eb1f361bc5b15fc4693ea2079b50f535624e04d0445160', nonce='cbe3f5f84370968a9f397a9c2263d3b380c1fd88aaae65a66d649fbd79b9ee6d'),
     ]
     prepare_player_data(proofs)
 
