@@ -210,27 +210,19 @@ def main():
             ENCODE_BIT_LEN = 128 # since each encoding[i] is 128 bits.
             big_num = sint(2**ENCODE_BIT_LEN-1) 
             followers_bits_list = [sint(ele) for ele in followers_bits.v]
-            # print_ln('Print follower bits')
-            # @for_range(length)
-            # def _(i):
-            #     print_ln('bittt : %s',followers_bits_list[i].reveal())
-
             active_encoding:list[sbitvec] = []
             for i in range(len(encoding)):
                 # if followers_bits_arr[i] = 0--> big_num+1 overflows 128 bits, seeing only all 0
                 # On the other hand, big_num still have 1 for all 128 bits
                 nullifier = sbitvec(big_num+sint(1)-followers_bits_list[i], ENCODE_BIT_LEN)
                 active_encoding.append(encoding[i].bit_xor(delta.bit_and(nullifier)))
-    
-            
-            concat = nonce.bit_decompose()+ [1,1]
+
+            concat = nonce.bit_decompose()+ sbitvec(sint(1), NUM_REDACTED_BYTES*8).bit_decompose()+ sbitvec(sint(1), NUM_REDACTED_BYTES*8).bit_decompose()
 
             for i in range(len(active_encoding)):
                 concat = concat + active_encoding[i].bit_decompose()
 
-            # # FIXME: Now do concat with nounce and then hash
-            print_ln("followers_byte = %s", followers_bits.reveal())
-            return sha3_256(delta + nonce)
+            return sha3_256(sbitvec.compose(concat))
 
         # Private inputs
         followers_0 = sint.get_input_from(0)
