@@ -38,6 +38,7 @@ Run the demo to calculate followers from three webpages:
 - [party_2](https://mhchia.github.io/followers-page/party_2.html)
 
 ![Demo Overview](./demo-pages.png)
+
 Execute the following command to start the demo:
 
 ```bash
