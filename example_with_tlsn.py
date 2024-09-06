@@ -120,10 +120,6 @@ def compile_run(computation):
     compiler.register_function(CIRCUIT_NAME)(computation)
     compiler.compile_func()
 
-    # check if the circuit file exists
-    circuit_file = MPSPDZ_CIRCUIT_DIR / f"{CIRCUIT_NAME}.mpc"
-    if not circuit_file.exists():
-        raise FileNotFoundError(f"Circuit file {circuit_file} not found")
     try:
         command = f"PLAYERS={NUM_PARTIES} {LOCAL_RUN} {CIRCUIT_NAME}"
         print(f"Running command: {command}")
@@ -185,13 +181,18 @@ def verify_tlsn_proofs(proofs: list[TLSNProof], commitments_mpspdz: list[int]):
 
 
 def main():
-    proofs = generate_tlsn_proofs()
+    # proofs = generate_tlsn_proofs()
     # print(f"Proofs: {proofs}")
     # proofs = [
     #     TLSNProof(followers=10, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='d36d53dada9156e0b06758f143623839', zero_encodings=['0386109eea524dd7c70ddeed7c4978ba', '0b88173f5667ff26ae9258fde0eff735', '5e9781f88c98d8a09089710c075e9c09', 'd42d2ce9e55ef14b9d6b5cf8fc669ded', 'aa212f7c88c954c84e13405b1ca2af10', '3d9f3ce5cca1cbc27826909a9e70d930', 'a50050ff300f9dee6cf902d66e13cf14', '50b216bb1ec747a9951b06e4bc9bffe5'], hash='fdad7b9374ca5843d5364b3c3d7ea680d3bce0ad85daba93ec60735bbd109c47', nonce='8ee24f0a12c839cca607dd825cb0ed02e8ef5c3682537279bdc59aefa05b19c7'),
     #     TLSNProof(followers=14, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='29c5b16b2a8a90c74f621658b42d9d99', zero_encodings=['0114f9b7900a22442dd6b365c595dba9', 'cc9ed62bf7a91898d8ed77f7fb4befda', '9f20bfb2baddc0cbd3326b0cb97ed9b6', '1fd3bccb52ed35abca50581f6cead317', '21c03c26a5e0dee2e4000fbfe55e6993', '41d119aff4a2863c72dc1f9861017ed7', '94ebde1268dcf501c9680af1867fbbc0', 'c57dbd7901751f07c0a368c938a34093'], hash='8f3a3d8cbf6041c80b0d30751439d9f4be583dcff1b1f0090905c72d4daeccc0', nonce='75ed4c01732977f9e150ad013233665458d2aaf408528199a37b2dce923973c4'),
     #     TLSNProof(followers=21, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='1735ee5903a44adbc1a48ea4d74fc352', zero_encodings=['13decd93e09d1ce104e8fe220c427313', 'b3cefbca0b171b32bc81330bb85f1a48', 'cbf6a9afa99e72a816b667e979a6128f', '3b15fe00aca04319535f92e1bc8f21df', '9feb755b737f4205da6dc739332e60f1', '12d34a49f87f9d9355f55c145eade67a', 'd90c7943cb1f18056c17fcc0d4477d2b', '3b1ba36d14c05597115b0cb79bc40b21'], hash='711bab8b9684d3493ac8775d9ca29dd407c9d080f9094b9a188a69a333038e2f', nonce='7507b6c2576c6ffd445cec7bcdc6a1b2b0264b1f74fbfb71125b4a3c20d7a75b'),
     # ]
+    proofs = [
+        TLSNProof(followers=10, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='79ab84bfe9ceaf5a021bc094a7cb5eaf', zero_encodings=['6afbce6cbe0d7132e54bc885ee25d4bd', '204effe60d798184545d95a8424896ff', '43ba4fb804062abd87d4759c92572fa0', 'b0619a1e8d57c8d4b2cce3e605dd89b9', 'e21b1c00a54d575b07aef780eff9623e', '62a503efbf3bfbc906152e156ce89edf', '2326d039eb02fda48401492c19b44f41', 'af2f3d1f568984b31f6b780522679f86'], hash='03004aa0a196f2e6b2f9039ae00a8ab130dcd9757833ba37a53bc08f64c5b495', nonce='90d825548965dd0a853991e4e441c3ce8e4d77cf31a353b7e8c1f50457ad86e4'),
+        TLSNProof(followers=14, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='85be1a7b1c8748667b969c9da5b9c27a', zero_encodings=['ebc58f79d1ee88886cd8ab0bb4606584', '36af92301886a5a1ab1b728117482c23', '225c0d93fa04390142b538421b4beeb9', '9152aae0b3861d26a5987088ca029b13', '39f021f53cf8dcd87c39f5e09133102f', 'a1fffdcbb174bc9fec971c9b20b9f9b7', '7056fb3945b9d415431e653adc033c98', '59eeb0ab9f511a1790694d610d69e36b'], hash='fdf22244dc4148211d10a066152788893bdc6e9166ad810f71baa84d6901528f', nonce='e8a51779ec9d4adb352a4cfce83b0177475727aa6e7560f9ce29488d58f098c6'),
+        TLSNProof(followers=21, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='c1b8d2c3f33c54aecc75c0b8da53ab03', zero_encodings=['19c5f782ad6ca96086f7a385870c9d50', 'd221da5457baed14a521646ab9e2e094', '35fa9550cb9d27497712c33216f28910', 'ab7601224d3465780568bf15003acd04', '1c2927eda1fff0eabd81e694d80b444b', 'd240dc445f6945836e2651cd12162868', 'c4f3b5f9a4d54239ed7f631bbd49efa6', '5da96e4ed9788b7f406b869b0312f549'], hash='bee7e51ba79bc1a697ef989f9cde9e83029ceeadee033b21a32817ab97519c25', nonce='82df150719986e2cd352cf0c987b8948ec7341881557aba3d2bed25a6cfc002a')
+    ]
     prepare_player_data(proofs)
 
     # MP-SPDZ circuit
