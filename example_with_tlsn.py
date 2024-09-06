@@ -90,13 +90,13 @@ def generate_tlsn_proofs() -> list[TLSNProof]:
 
             encodings = proof_data["encodings"]
             assert len(encodings) == NUM_REDACTED_BYTES, f"Expected {NUM_REDACTED_BYTES} bytes in encodings, got {len(encodings)}"
+            all_labels = []
             for e in encodings:
                 delta = e["U8"]["state"]["delta"]
                 labels = e["U8"]["labels"]
                 assert len(delta) == WORD_SIZE, f"Expected {WORD_SIZE} bytes in delta, got {len(delta)}"
                 delta_hex = bytes(delta).hex()
                 assert len(labels) == WORDS_PER_LABEL, f"Expected {WORDS_PER_LABEL} labels, got {len(labels)}"
-                all_labels = []
                 for l in labels:
                     assert len(l) == WORD_SIZE, f"Expected {WORD_SIZE} bytes in label, got {len(l)}"
                     label_hex = bytes(l).hex()
