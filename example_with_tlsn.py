@@ -4,7 +4,7 @@ import subprocess
 import json
 
 from Compiler.compilerLib import Compiler
-from Compiler.types import sint
+from Compiler.types import sint, sfix
 from Compiler.GC.types import sbitvec, sbits
 from Compiler.library import print_ln
 from Compiler.circuit import sha3_256
@@ -44,7 +44,7 @@ PARTY_DATA_DIR = MPSPDZ_PROJECT_ROOT / "Player-Data"
 PARTY_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
-NUM_REDACTED_BYTES = 2
+NUM_REDACTED_BYTES = 1
 WORD_SIZE = 16
 WORDS_PER_LABEL = 8
 
@@ -184,14 +184,15 @@ def main():
     # proofs = generate_tlsn_proofs()
     # print(f"Proofs: {proofs}")
     proofs = [
-        TLSNProof(followers=10, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='d1ec7d44024e435443a80ef42a6d59d0', zero_encodings=['eb0ff64e6d184cc300ccdede9980c52a', 'c3e21f5970827e42bf7b1931af085653', '036fb7183f6d204a91cc8d97e9a792c9', '09556a664cb4368d373b20b090e5dbd0', '3276862953633172a258263a1f3a52f5', 'b34929ece0fe3652d354c70ddae7c11e', 'c4a3e44b801555136aa90489f4ca4442', '3270ab170f3366f73d78429216d97875', 'ab1cbc3d45bab23ed57d4f1113b61351', 'ad7bc80a3a9719e5356d0b8e55a2b7da', '9bc162080e85071281bb6971ede5497e', '40c27ba571b12f2ae791f5217ed485b1', '393022347ae48bedd7244a31f6ac02e3', '104317fbf0eca460f7a77c3581968cb7', 'd7b72674b0282c1747ccf7bfcefd7c8a', '863954ffefe6ee363d5310dcd315278a'], hash='798d05beb4d1e95eadf7c0d7fe47ba11fc674660d626ab2f5f35b3e323e03b47', nonce='42584f2289e56d7d93f6cdd3c0c316d1167b8f9bbf3c5de11ed906a14a331d43'),
-        TLSNProof(followers=14, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='a7c391edf3b2b1a0828fc421628d924b', zero_encodings=['f540d6b1be084f1d18d6ddbbd0aa07b8', '0bd7fc981e6bb0e15a7fbc67451ee90f', '63b14f774eb29b25f8b64408d6381b96', 'bd3c0cc08a8bbae0b43fd281541d9025', '40903ab18e7ecbe93e37351241090a7a', '8968b757b4d83b6b0bb08c05331f6047', '8e75d69d2f624eaf4ca5de3994ed3196', '8cabb249ba300120533d8dbd80c9f5ef', '498835c3fe12ccc525bca5b5498532af', '8171425dd53a28215188d7d91bde0139', '0349a6ab30ac0ffefdfd1a08e3ce7747', 'd89204f80f615abb794a790c70ec7f3a', '782ac40e3e08f0a05971a07ebb221474', '343f6bd76ad31cff3f4a51ee2c67eb0f', '5d289b15cf6e10b8de8746a2230c2271', '6b15c1291ad2afc1135d27351170770d'], hash='52cbf3ae8280eee9bf06cc58d2514055418b36943333a8d9851d66049872c1ef', nonce='82cad1a53873655667818ced06cf09012c90ccdc978597b0555fb7bacebcbdb5'),
-        TLSNProof(followers=21, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='bd26e7427cc43c77258cf3bf23b67da1', zero_encodings=['dc9fe9e2780636a1ab70bf03c0188408', 'f878d6081dd9eea10437477a9657b6c8', 'f83da2fd15d956a983aa59219f06d6b3', '23ceed47af186dc6f3dfcd03c93e0c59', '83932885a0193ebba68bb214c4e6ce72', '5e11011b5ec62f2e3b08a7d820c3e8e0', 'bd786e4b69a444867022da6520814681', '0ec83595f88c5685da4aa512edbd5d97', '585b0a699a0be042f6de662e22ce2013', '917d7d7d07a0ffe724fc807069424c21', 'bb688ebe22dd4cc8e3ba9b85a6ef5d06', '25caa422aa10defd9d0141ba52c9e6f6', '96dd9c33b8fd8a90fc0585628fa23225', '68ad054d4bd78d2059f54f6604d7cb43', '60bf0a2c4e449de2c75cc4019b3333e7', 'e37ec97d05a5f3ce78bd07ed13fcb73c'], hash='b653e141df4f4d2ed3eb1f361bc5b15fc4693ea2079b50f535624e04d0445160', nonce='cbe3f5f84370968a9f397a9c2263d3b380c1fd88aaae65a66d649fbd79b9ee6d'),
+        TLSNProof(followers=3, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='2501fa5c2b50281d97cc4e63bb1beaef', zero_encodings=['b51d9f6c1d7133a3c2d307b431c7f3ea', '2842eaaf492880247548f2cb189c2f5b', 'f1844ae7b20ad935605c87878b0ffb96', 'd19b84012adf53dedc896ebb36f7decd', 'e9629218d15b7d0887ffa78c4c70d237', 'd7ce38f06c1b134f30ee3dcd5c947d54', '7e666304dbc6c6a48d270c6d4c71f789', '62a1e68e06fd1d02adeb3646cfb47601'], hash='dc249d3704656445a729cc36e39a2f62900fd24f79d20d0dc6f30a5f22ef8f06', nonce='2a0ffcbec6f9338b582694ed46504445e59f3159ad6b7cb035325450ccb31213'),
+        TLSNProof(followers=7, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='373649df4ba763efb80393526cd8914a', zero_encodings=['4072e2f7e1c271086b4e73ddfd01f55a', '9de71f0bc983a30a4f4d48e21e8202a5', '5abfda4890938dc295bde881e309e8ca', 'c03b03d33cf9f21d110c85c4e76b957c', 'b38ce9704025ed2dede2a17d878a207e', 'ff676722a58d98742644268c05abe19d', '02ee533f359a03c45302b2e1cf529b9f', '27b057b471aa76641263e71c82526310'], hash='9b1d8da9d318e47f0350ff28a517e082083b3cd230dd846c87c85998612c50bf', nonce='d25f6e5bb66954b8765ee15ce9b76eee77567f1c5d9254aeeacf4ba013a58ff6'),
+        TLSNProof(followers=8, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='a933d0765b313d91d518bda095977f78', zero_encodings=['4b88931361b0b69fa573e18995f84042', '659d0fc74b3a8fe2baa71f5917c20c16', 'de0c378c7ae34171fff72a8bf5c93ad2', '554f1ed3f33d8c522988407d6d6f84d1', '71413cfa8f91380a0edc510a93e07fca', '26eb86d3c2fa2187be7087f17233ebbb', '3db5b599d6b8590693ffda5f4a2be9bb', '06462ccd3c5e11b7839053b4b9860409'], hash='5f8f1b8aaee66105cd5f29c65f85448e5e6e8f4a76a1c22dc619cffd09fd3666', nonce='451fa29db39b2ede357f10011b1d5957fa2ceca56ff6ac83b75c68f75340da99')
     ]
     prepare_player_data(proofs)
 
     # MP-SPDZ circuit
     def computation():
+        sfix.round_nearest = True
         def calculate_data_commitment(followers: sint, delta: sbitvec, encoding: list[sbitvec], nonce: sbitvec):
             # `followers` is "Data" and `encoding` is the "Full Encoding"
             # Active coding is calculated from `followers` and `encoding`.
