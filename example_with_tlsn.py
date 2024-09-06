@@ -4,9 +4,9 @@ import subprocess
 import json
 
 from Compiler.compilerLib import Compiler
-from Compiler.types import sint
+from Compiler.types import sint, Array
 from Compiler.GC.types import sbitvec, sbits
-from Compiler.library import print_ln
+from Compiler.library import print_ln, for_range
 from Compiler.circuit import sha3_256
 
 
@@ -121,9 +121,9 @@ def compile_run(computation):
     compiler.compile_func()
 
     # check if the circuit file exists
-    circuit_file = MPSPDZ_CIRCUIT_DIR / f"{CIRCUIT_NAME}.mpc"
-    if not circuit_file.exists():
-        raise FileNotFoundError(f"Circuit file {circuit_file} not found")
+    # circuit_file = MPSPDZ_CIRCUIT_DIR / f"{CIRCUIT_NAME}.mpc"
+    # if not circuit_file.exists():
+    #     raise FileNotFoundError(f"Circuit file {circuit_file} not found")
     try:
         command = f"PLAYERS={NUM_PARTIES} {LOCAL_RUN} {CIRCUIT_NAME}"
         print(f"Running command: {command}")
@@ -185,13 +185,13 @@ def verify_tlsn_proofs(proofs: list[TLSNProof], commitments_mpspdz: list[int]):
 
 
 def main():
-    proofs = generate_tlsn_proofs()
+    # proofs = generate_tlsn_proofs()
     # print(f"Proofs: {proofs}")
-    # proofs = [
-    #     TLSNProof(followers=10, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='d36d53dada9156e0b06758f143623839', zero_encodings=['0386109eea524dd7c70ddeed7c4978ba', '0b88173f5667ff26ae9258fde0eff735', '5e9781f88c98d8a09089710c075e9c09', 'd42d2ce9e55ef14b9d6b5cf8fc669ded', 'aa212f7c88c954c84e13405b1ca2af10', '3d9f3ce5cca1cbc27826909a9e70d930', 'a50050ff300f9dee6cf902d66e13cf14', '50b216bb1ec747a9951b06e4bc9bffe5'], hash='fdad7b9374ca5843d5364b3c3d7ea680d3bce0ad85daba93ec60735bbd109c47', nonce='8ee24f0a12c839cca607dd825cb0ed02e8ef5c3682537279bdc59aefa05b19c7'),
-    #     TLSNProof(followers=14, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='29c5b16b2a8a90c74f621658b42d9d99', zero_encodings=['0114f9b7900a22442dd6b365c595dba9', 'cc9ed62bf7a91898d8ed77f7fb4befda', '9f20bfb2baddc0cbd3326b0cb97ed9b6', '1fd3bccb52ed35abca50581f6cead317', '21c03c26a5e0dee2e4000fbfe55e6993', '41d119aff4a2863c72dc1f9861017ed7', '94ebde1268dcf501c9680af1867fbbc0', 'c57dbd7901751f07c0a368c938a34093'], hash='8f3a3d8cbf6041c80b0d30751439d9f4be583dcff1b1f0090905c72d4daeccc0', nonce='75ed4c01732977f9e150ad013233665458d2aaf408528199a37b2dce923973c4'),
-    #     TLSNProof(followers=21, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='1735ee5903a44adbc1a48ea4d74fc352', zero_encodings=['13decd93e09d1ce104e8fe220c427313', 'b3cefbca0b171b32bc81330bb85f1a48', 'cbf6a9afa99e72a816b667e979a6128f', '3b15fe00aca04319535f92e1bc8f21df', '9feb755b737f4205da6dc739332e60f1', '12d34a49f87f9d9355f55c145eade67a', 'd90c7943cb1f18056c17fcc0d4477d2b', '3b1ba36d14c05597115b0cb79bc40b21'], hash='711bab8b9684d3493ac8775d9ca29dd407c9d080f9094b9a188a69a333038e2f', nonce='7507b6c2576c6ffd445cec7bcdc6a1b2b0264b1f74fbfb71125b4a3c20d7a75b'),
-    # ]
+    proofs = [
+        TLSNProof(followers=10, proof_path=FILE_DIR / 'tlsn-proof-p0.json', delta='d36d53dada9156e0b06758f143623839', zero_encodings=['0386109eea524dd7c70ddeed7c4978ba', '0b88173f5667ff26ae9258fde0eff735', '5e9781f88c98d8a09089710c075e9c09', 'd42d2ce9e55ef14b9d6b5cf8fc669ded', 'aa212f7c88c954c84e13405b1ca2af10', '3d9f3ce5cca1cbc27826909a9e70d930', 'a50050ff300f9dee6cf902d66e13cf14', '50b216bb1ec747a9951b06e4bc9bffe5'], hash='fdad7b9374ca5843d5364b3c3d7ea680d3bce0ad85daba93ec60735bbd109c47', nonce='8ee24f0a12c839cca607dd825cb0ed02e8ef5c3682537279bdc59aefa05b19c7'),
+        TLSNProof(followers=14, proof_path=FILE_DIR / 'tlsn-proof-p1.json', delta='29c5b16b2a8a90c74f621658b42d9d99', zero_encodings=['0114f9b7900a22442dd6b365c595dba9', 'cc9ed62bf7a91898d8ed77f7fb4befda', '9f20bfb2baddc0cbd3326b0cb97ed9b6', '1fd3bccb52ed35abca50581f6cead317', '21c03c26a5e0dee2e4000fbfe55e6993', '41d119aff4a2863c72dc1f9861017ed7', '94ebde1268dcf501c9680af1867fbbc0', 'c57dbd7901751f07c0a368c938a34093'], hash='8f3a3d8cbf6041c80b0d30751439d9f4be583dcff1b1f0090905c72d4daeccc0', nonce='75ed4c01732977f9e150ad013233665458d2aaf408528199a37b2dce923973c4'),
+        TLSNProof(followers=21, proof_path=FILE_DIR / 'tlsn-proof-p2.json', delta='1735ee5903a44adbc1a48ea4d74fc352', zero_encodings=['13decd93e09d1ce104e8fe220c427313', 'b3cefbca0b171b32bc81330bb85f1a48', 'cbf6a9afa99e72a816b667e979a6128f', '3b15fe00aca04319535f92e1bc8f21df', '9feb755b737f4205da6dc739332e60f1', '12d34a49f87f9d9355f55c145eade67a', 'd90c7943cb1f18056c17fcc0d4477d2b', '3b1ba36d14c05597115b0cb79bc40b21'], hash='711bab8b9684d3493ac8775d9ca29dd407c9d080f9094b9a188a69a333038e2f', nonce='7507b6c2576c6ffd445cec7bcdc6a1b2b0264b1f74fbfb71125b4a3c20d7a75b'),
+    ]
     prepare_player_data(proofs)
 
     # MP-SPDZ circuit
@@ -202,7 +202,26 @@ def main():
             # Ref:
             #   - docs: https://docs.tlsnotary.org/mpc/commitments.html#commitments
             #   - code: https://github.com/tlsnotary/tlsn/blob/e14d0cf563e866cde18d8cf7a79cfbe66d220acd/crates/core/src/commitment/blake3.rs#L76-L80
-            # FIXME: this is not the correct formula
+            
+            # FIXME: Now, we only assume that length >= len(encoding) which depends on plain text
+            length =  10 # Vary on the maximum length of plain text SHOULD BE BIGGER than this value!!
+            ENCODE_BIT_LEN = 128 # since each encoding[i] is 128 bits.
+            big_num = sint(2**ENCODE_BIT_LEN-1) 
+            followers_bits= sbitvec(followers, length)
+            followers_bits_list = [sint(ele) for ele in followers_bits.v]
+            # print_ln('Print follower bits')
+            # @for_range(length)
+            # def _(i):
+            #     print_ln('bittt : %s',followers_bits_list[i].reveal())
+            
+            active_encoding:list[sbitvec] = []
+            for i in range(len(encoding)):
+                # if followers_bits_arr[i] = 0--> big_num+1 overflows 128 bits, seeing only all 0
+                # On the other hand, big_num still have 1 for all 128 bits
+                nullifier = sbitvec(big_num+sint(1)-followers_bits_list[i], ENCODE_BIT_LEN)
+                active_encoding.append(encoding[i].bit_xor(delta.bit_and(nullifier)))
+            
+            # # FIXME: Now do concat with nounce and then hash
             return sha3_256(delta + nonce)
 
         # Private inputs
