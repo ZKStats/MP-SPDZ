@@ -44,11 +44,13 @@ PARTY_DATA_DIR = MPSPDZ_PROJECT_ROOT / "Player-Data"
 PARTY_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 
+# Only supports 1 byte for now
 NUM_REDACTED_BYTES = 1
 WORD_SIZE = 16
 WORDS_PER_LABEL = 8
 
 COMMITMENT_HASH_SIZE = 32
+ASCII_BASE = 48
 
 
 def prepare_player_data(proofs: list[TLSNProof]):
@@ -56,7 +58,10 @@ def prepare_player_data(proofs: list[TLSNProof]):
     for i, proof in enumerate(proofs):
         party_data_file = PARTY_DATA_DIR / f"Input-P{i}-0"
         with open(party_data_file, "w") as f_data:
-            f_data.write(f"{proof.followers}\n")
+            followers = proof.followers
+            bytes_followers = str(followers).encode('ascii')
+            assert len(bytes_followers) == NUM_REDACTED_BYTES, f"Expected {NUM_REDACTED_BYTES} bytes, got {len(bytes_followers)}"
+            f_data.write(f"{followers}\n")
 
 
 def generate_tlsn_proofs() -> list[TLSNProof]:
@@ -200,6 +205,9 @@ def main():
             #   - docs: https://docs.tlsnotary.org/mpc/commitments.html#commitments
             #   - code: https://github.com/tlsnotary/tlsn/blob/e14d0cf563e866cde18d8cf7a79cfbe66d220acd/crates/core/src/commitment/blake3.rs#L76-L80
             # FIXME: this is not the correct formula
+            followers_byte = followers + ASCII_BASE
+            followers_bits = sbitvec(followers_byte, NUM_REDACTED_BYTES*8)
+            print_ln("followers_byte = %s", followers_bits.reveal())
             return sha3_256(delta + nonce)
 
         # Private inputs
