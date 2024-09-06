@@ -203,7 +203,6 @@ def main():
             # Ref:
             #   - docs: https://docs.tlsnotary.org/mpc/commitments.html#commitments
             #   - code: https://github.com/tlsnotary/tlsn/blob/e14d0cf563e866cde18d8cf7a79cfbe66d220acd/crates/core/src/commitment/blake3.rs#L76-L80
-            # FIXME: this is not the correct formula
             followers_byte = followers + ASCII_BASE
             followers_bits = sbitvec(followers_byte, NUM_REDACTED_BYTES*8)
             ENCODE_BIT_LEN = 128 # since each encoding[i] is 128 bits.
