@@ -204,7 +204,7 @@ def main():
             #   - code: https://github.com/tlsnotary/tlsn/blob/e14d0cf563e866cde18d8cf7a79cfbe66d220acd/crates/core/src/commitment/blake3.rs#L76-L80
             
             # FIXME: Now, we only assume that length >= len(encoding) which depends on plain text
-            length =  10 # Vary on the maximum length of plain text SHOULD BE BIGGER than this value!!
+            length =  16 # Vary on the maximum length of plain text SHOULD BE BIGGER than this value!! but here we let it be 16
             ENCODE_BIT_LEN = 128 # since each encoding[i] is 128 bits.
             big_num = sint(2**ENCODE_BIT_LEN-1) 
             followers_bits= sbitvec(followers, length)
