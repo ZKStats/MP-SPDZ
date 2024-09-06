@@ -10,11 +10,11 @@ A system that allows parties to prove their inputs in Multi-Party Computation (M
 
 ### Detailed Process
 - **Problem 1: No way to prove properties of redacted data**
-  The ZKP feature of TLSNotary is still in development, so redacted data is not committed, making it impossible to prove properties.
-  **Solution:** Add a "commit-and-reveal-commitment" feature to TLSNotary, allowing only commitments (hashes) to be revealed, keeping private inputs confidential.
+  - The ZKP feature of TLSNotary is still in development, so redacted data is not committed, making it impossible to prove properties.
+  - **Solution:** Add a "commit-and-reveal-commitment" feature to TLSNotary, allowing only commitments (hashes) to be revealed, keeping private inputs confidential.
 
 - **Problem 2: Hash function blake3 is not supported in MP-SPDZ**
-  **Solution:** Replace blake3 with sha3 for compatibility with MP-SPDZ.
+  - **Solution:** Replace blake3 with sha3 for compatibility with MP-SPDZ.
 
 ![Detailed Process](./structure.png)
 
