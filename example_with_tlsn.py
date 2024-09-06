@@ -5,7 +5,7 @@ import json
 
 from Compiler.compilerLib import Compiler
 from Compiler.types import sint, sfix
-from Compiler.GC.types import sbitvec, sbits
+from Compiler.GC.types import sbitvec, sbit
 from Compiler.library import print_ln
 from Compiler.circuit import sha3_256
 
@@ -199,16 +199,30 @@ def main():
     def computation():
         sfix.round_nearest = True
         def calculate_data_commitment(followers: sint, delta: sbitvec, encoding: list[sbitvec], nonce: sbitvec):
-            # `followers` is "Data" and `encoding` is the "Full Encoding"
-            # Active coding is calculated from `followers` and `encoding`.
-            # Ref:
-            #   - docs: https://docs.tlsnotary.org/mpc/commitments.html#commitments
-            #   - code: https://github.com/tlsnotary/tlsn/blob/e14d0cf563e866cde18d8cf7a79cfbe66d220acd/crates/core/src/commitment/blake3.rs#L76-L80
-            # FIXME: this is not the correct formula
-            followers_byte = followers + ASCII_BASE
-            followers_bits = sbitvec(followers_byte, NUM_REDACTED_BYTES*8)
-            print_ln("followers_byte = %s", followers_bits.reveal())
-            return sha3_256(delta + nonce)
+            # 8-bit decomposition of followers
+            followers_decomposed = followers.bit_decompose(8)
+            # 8*32-bit decomposition of nonce
+            nonce_decomposed = nonce.bit_decompose(256)
+            # 8-bit decomposition of magic number 1
+            # which is used in https://github.com/privacy-scaling-explorations/mpz/blob/65994b094d28bac6bbf53be35e6e3002e4fd2573/crates/mpz-core/src/serialize.rs#L10
+            # when serializing the data commitment
+            magic_number_1 = sint(1).bit_decompose(8)
+            # decommitment https://github.com/tlsnotary/tlsn/blob/3554db83e17b2e5fc98293b397a2907b7f023496/tlsn/tlsn-core/src/commitment/blake3.rs#L82
+            # nonce | 1 | 1 | encoding[i] ^ delta if followers[i] else encoding[i]
+            decommitment = []
+
+            for i in range(256):
+                decommitment.append(sbit(nonce_decomposed[i]))
+            for i in range(8):
+                decommitment.append(sbit(magic_number_1[i]))
+            for i in range(8):
+                decommitment.append(sbit(magic_number_1[i]))
+            for i in range(8):
+                for j in range(len(encoding[i])):
+                    decommitment.append(sbit(followers_decomposed[i]).if_else(encoding[i].bit_xor(delta)[j], encoding[i][j]))
+            
+            commitment = sbitvec.from_vec(decommitment)
+            return sha3_256(commitment)
 
         # Private inputs
         followers_0 = sint.get_input_from(0)
