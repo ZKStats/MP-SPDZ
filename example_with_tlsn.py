@@ -181,8 +181,7 @@ def verify_tlsn_proofs(proofs: list[TLSNProof], commitments_mpspdz: list[int]):
         commitment_mpspdz = commitments_mpspdz[party_index]
         print(f"party {party_index}: commitment_tlsn = {commitment_tlsn}")
         print(f"party {party_index}: commitment_mpspdz = {commitment_mpspdz}")
-        # FIXME: Check calculated commitments from MP-SPDZ output match the ones in TLSN proofs
-        # assert commitment_tlsn == commitment_mpspdz, f"Commitment encoding does not match for party {party_index}"
+        assert commitment_tlsn == commitment_mpspdz, f"Commitment encoding does not match for party {party_index}"
 
 
 def main():
@@ -208,7 +207,7 @@ def main():
             followers_byte = followers + ASCII_BASE
             followers_bits = sbitvec(followers_byte, NUM_REDACTED_BYTES*8)
             ENCODE_BIT_LEN = 128 # since each encoding[i] is 128 bits.
-            big_num = sint(2**ENCODE_BIT_LEN-1) 
+            big_num = sint(2**ENCODE_BIT_LEN-1)
             followers_bits_list = [sint(ele) for ele in followers_bits.v]
             active_encoding:list[sbitvec] = []
             for i in range(len(encoding)):
@@ -255,6 +254,7 @@ def main():
 
     avg_followers, commitments_mpsdz = compile_run(computation)
     verify_tlsn_proofs(proofs, commitments_mpsdz)
+    print("\n\n\nTLSN proofs verified successfully and matched with MP-SPDZ output")
     print(f"Average followers: {avg_followers}")
 
 
