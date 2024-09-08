@@ -39,7 +39,7 @@ This is the ideal flow of our project:
 In our demonstration, all TLSNotary proofs from the parties are verified by our demo script in a centralized manner, rather than being passed between the parties. This simplification allows us to focus on demonstrating the core concept of input authentication without the complexity of network communication.
 
 ### Run Demo
-Run the demo to calculate followers from three webpages:
+In the demo, each party gets their private input `followers` from their corresponding webpages:
 - [party_0](https://mhchia.github.io/followers-page/party_0.html)
 - [party_1](https://mhchia.github.io/followers-page/party_1.html)
 - [party_2](https://mhchia.github.io/followers-page/party_2.html)
