@@ -46,6 +46,7 @@ Array, Matrix, multiArray, sfix, sint, Compiler.ml.FixAveragePool2d, Compiler.ml
 1. Initiate the server for the first time
 
    ```
+   make -j8 <protocol>-party.x
    Scripts/setup-ssl.sh <nparties>
    Scripts/setup-clients.sh <nclients>
    ./compile.py demo-client
