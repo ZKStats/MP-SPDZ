@@ -10,7 +10,8 @@ import re
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import execute_silently, execute_computation, Protocols, ProtocolsType
+from common_lib import execute_silently, execute_computation, Protocols, ProtocolsType, DIMENTION_FILE, parse_computation_output
+from Compiler.types import sfix, Matrix
 
 import argparse
 from datetime import datetime
@@ -38,12 +39,6 @@ def parse_args():
         help='Computation definition file. If not specified, the definition will be read from stdin',
     )
     parser.add_argument(
-        '--num-parties',
-        type=int,
-        default=3,
-        help='Number of parties participating the computation',
-    )
-    parser.add_argument(
         '--verbose',
         action='store_true',
         help='Show output from MPC script',
@@ -52,15 +47,30 @@ def parse_args():
 
 args = parse_args()
 
-if args.file is not None:
-    pass
+# inject computation definition script into this script
+if args.file is None:
+     script = sys.stdin.read()
+else:
+    # assumes that file is already opened
+    try:
+        script = args.file.read()
+    finally:
+        args.file.close()
+exec(script)
 
+prepare_data() # from computation definition script
+
+# execute the injected computation
 mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
 
 output = execute_computation(
-    args.num_parties,
+    NUM_PARTIES, # from computation definition script
     mpc_script,
     args.name,
 )
+out_obj = parse_computation_output(output)
+
 if args.verbose:
     print(output)
+
+print(out_obj)

@@ -27,7 +27,6 @@ M = mpcstats_lib.MAGIC_NUMBER
 
 TOLERANCE_SMALL = 0.0001  # 0.01%
 
-
 def pd1(col):
     return gen_player_data_for_1_param_func(col, 2, 1)
 

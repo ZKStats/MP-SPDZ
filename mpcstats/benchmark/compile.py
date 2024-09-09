@@ -44,16 +44,18 @@ def parse_args() -> Any:
 
 args = parse_args()
 
-# inject computation script
+# inject computation definition script
 if args.file is None:
      script = sys.stdin.read()
 else:
-    # assumes that args.file is already opened
+    # assumes that file is already opened
     try:
-        script  = args.file.read()
+        script = args.file.read()
     finally:
         args.file.close()
 exec(script)
+
+prepare_data() # from computation definition script
 
 # compile the computation
 def f():
