@@ -24,8 +24,8 @@ def computation():
     selected_row = 0
 
     for party_id, m in enumerate(ms):
-        a = [m[selected_row][i] for i in range(m.shape[1])]
-        all_elems[:] += a[:]
+        row = [m[selected_row][i] for i in range(m.shape[1])]
+        all_elems[:] += row[:]
 
     total = sum(all_elems)
     write_result(total.reveal())
