@@ -10,7 +10,8 @@ import re
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import execute_silently, execute_computation, Protocols, ProtocolsType, DIMENTION_FILE, parse_computation_output
+from common_lib import execute_silently, execute_computation, Protocols, ProtocolsType, DIMENTION_FILE
+from output_parser import parse_execution_output
 from Compiler.types import sfix, Matrix
 
 import argparse
@@ -68,7 +69,7 @@ output = execute_computation(
     mpc_script,
     args.name,
 )
-out_obj = parse_computation_output(output)
+out_obj = parse_execution_output(output)
 
 if args.verbose:
     print(output)

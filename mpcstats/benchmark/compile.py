@@ -40,6 +40,11 @@ def parse_args() -> Any:
         default=None,
         help='Computation definition file. If not specified, the definition will be read from stdin',
     )
+    parser.add_argument(
+        '--edabit',
+        action='store_true',
+        help='Use edaBit',
+    )
     return parser.parse_args()
 
 args = parse_args()
@@ -59,7 +64,10 @@ prepare_data() # from computation definition script
 
 # compile the computation
 def f():
-    compile_computation(args.name, computation)
+    flags = []
+    if args.edabit:
+        flags.append('--edabit')
+    compile_computation(args.name, computation, flags)
 
 def g():
     return timeit(f, number=1)

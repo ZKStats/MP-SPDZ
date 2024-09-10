@@ -15,8 +15,6 @@ from Compiler.library import print_ln
 import subprocess
 import config
 import os
-import re
-import json
 from typing import Callable, Any, Literal, TextIO
 from dataclasses import dataclass
 
@@ -35,20 +33,11 @@ class Dimention:
     def num_elements(self):
         return self.rows * self.cols
 
-@dataclass
-class ComputationOutput:
-    result: str
-
-    def to_object(self) -> Any:
-        return {
-            'Result': self.result,
-        }
-    def __str__(self) -> str:
-        return json.dumps(self.to_object())
-
 def create_party_data_files(dataset_file: Path, num_parties: int) -> None:
     if not dataset_file.exists():
         raise FileNotFoundError(f'{dataset_file} not found')
+
+    player_data_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         dims = open(DIMENTION_FILE, 'w')
@@ -127,6 +116,7 @@ def get_aggr_party_data_vec(num_parties: int, row_index: int) -> list[sfix]:
 def compile_computation(
     name: str,
     computation: Callable[[], None],
+    flags: list[str],
     cfg: Any = config.DefaultMPSPDZSetting(),
 ) -> None:
     '''
@@ -140,7 +130,7 @@ def compile_computation(
         sfix.set_precision(cfg.f, cfg.k)
         computation()
 
-    compiler = Compiler()
+    compiler = Compiler(flags)
     compiler.register_function(name)(init_and_compute)
 
     # temporarily clear the command line arguments passed to the caller script
@@ -163,18 +153,6 @@ def execute_computation(
 
     except subprocess.CalledProcessError as e:
         raise Exception(f'Executing MPC failed ({e.returncode}): stdout: {e.stdout}, stderr: {e.stderr}')
-
-def parse_computation_output(output: str) -> ComputationOutput:
-    # TODO extract other information as well
-    result = None
-
-    for line in output.split('\n'):
-        if result is None:
-            m = re.match(r'^Result: (.*)$', line)
-            if m:
-                result = m.group(1)
-
-    return ComputationOutput(result)
 
 def execute_silently(f: Callable[[], None]) -> Any:
     stdout_bak = sys.stdout

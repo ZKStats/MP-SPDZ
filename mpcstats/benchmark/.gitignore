@@ -1,2 +1,5 @@
 Player-Data/
 Programs/
+logs/
+!Programs/Circuits/
+!Programs/Source/
