@@ -3,6 +3,7 @@ repo_root = Path(__file__).parent.parent
 mpcstats_dir = repo_root / 'mpcstats'
 benchmark_dir = mpcstats_dir / 'benchmark'
 player_data_dir = benchmark_dir / 'Player-Data'
+datasets_dir = benchmark_dir / 'datasets'
 
 import sys
 sys.path.append(str(repo_root))
@@ -110,6 +111,18 @@ def load_party_data_files(num_parties: int) -> list[Matrix]:
 
             ms.append(m)
     return ms
+
+def get_aggr_party_data_vec(num_parties: int, row_index: int) -> list[sfix]:
+    # load party data into matrices
+    ms = load_party_data_files(num_parties)
+
+    # aggregate matrix row of all parties
+    vec = []
+    for party_id, m in enumerate(ms):
+        row = [m[row_index][i] for i in range(m.shape[1])]
+        vec[:] += row[:]
+
+    return vec
 
 def compile_computation(
     name: str,
