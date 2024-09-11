@@ -5,13 +5,17 @@ repo_root = Path(__file__).parent.parent.parent
 mpcstats_dir = repo_root / 'mpcstats'
 benchmark_dir = mpcstats_dir / 'benchmark'
 
+import sys
+sys.path.append(str(repo_root))
+sys.path.append(f'{repo_root}/mpcstats')
+
 import argparse
 import subprocess
 import os
 import time
 from typing import List, Literal
 import json
-from common_lib import Protocols, ProtocolsType
+from common_lib import Protocols, ProtocolsType, read_script 
 
 # TODO generate list from type definition
 MemoryFieldsType = Literal['sz', 'rss']
@@ -57,13 +61,6 @@ def execute_command(
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Benchmarking Script")
-
-    parser.add_argument(
-        'memory-field',
-        type=str, 
-        choices=MemoryFields, 
-        help='ps command field to retrieve memory usage',
-    )
     parser.add_argument(
         'protocol',
         type=str, 
@@ -71,58 +68,95 @@ def parse_args():
         help='MPC protocol',
     )
     parser.add_argument(
-        'mem-get-sleep',
+        'dataset',
+        type=argparse.FileType('r'),
+        help='dataset csv file',
+    )
+    parser.add_argument(
+        '--name',
+        type=str,
+        default=f'computation',
+        help='Name of the computation',
+    )
+    parser.add_argument(
+        '--memory-field',
+        type=str, 
+        choices=MemoryFields,
+        default='sz',
+        help='ps command field to retrieve memory usage',
+    )
+    parser.add_argument(
+        '--edabit',
+        action='store_true',
+        help='Use edaBit',
+    )
+    parser.add_argument(
+        '--mem-get-sleep',
         type=float, 
         default=0.1,
         help='Time interval (in seconds) to sleep between memory retrievals'
     )
     parser.add_argument(
-        'computation',
-        type=argparse.FileType('r'),
-        help='pyhton module that contains a computation',
-    )
-    parser.add_argument(
-        'dataset',
-        type=argparse.FileType('r'),
-        help='dataset csv file',
+        '--file',
+        type=str,
+        help='Computation definition file. If not specified, the definition will be read from stdin',
     )
     parser.add_argument('--num-parties', type=int, default=3, help='Number of participating parties')
-
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        help='Show output from internally called scripts',
+    )
     return parser.parse_args()
 
 args = parse_args()
 
-print(f'args = {args}')
+def gen_compile_cmd(args: list[str]) -> list[str]:
+    compile_script = benchmark_dir / 'compile.py'
+    opts = []
+    if args.name:
+        opts.extend(['--name', args.name])
+    if args.file:
+        opts.extend(['--file', args.file])
+    if args.edabit:
+        opts.append('--edabit')
+    if args.verbose:
+        opts.append('--verbose')
 
-# Inputs:
-# - MPC protocol: semi/mascot/etc
-# - Number of parties: 3
-# - Number of rows/ dataset
-# - Computation
+    return [compile_script] + opts
 
+def gen_executor_cmd(args: list[str]) -> list[str]:
+    executor_script = benchmark_dir / 'executor.py'
+    opts = []
+    if args.name:
+        opts.extend(['--name', args.name])
+    if args.file:
+        opts.extend(['--file', args.file])
+    if args.verbose:
+        opts.append('--verbose')
+ 
+    return [executor_script, args.protocol] + opts
 
-# - **Get measurements**:
-#     - DONE: Compile time: time consumed by running `compile.py`
-#     - RAM required when compiling (usually linear to circuit size):
-#         - Could be estimated with [MP-SPDZ memory usage utility](https://mp-spdz.readthedocs.io/en/latest/utils.html#memory-usage)
-#         - To measure real RAM usage, query the system, possibly with `ps`
-#         - Try with complex computation
-#     - Run time: fetched from MP-SPDZ output
-#         
-#         ```bash
-#         Time = 0.02719 seconds
-#         
-#         ```
-#         
-#     - Communications: fetched from MP-SPDZ output
-#         
-#         ```bash
-#         Data sent = 0.1252 MB in ~57 rounds (party 0 only; use '-v' for more details)
-#         Global data sent = 0.254496 MB (all parties)
-#         
-#         ```
-#         
-#     - DONE: Bytecode size: bytecode is located under `Programs/Bytecode/`, e.g., get the size by `ls -l Programs/Bytecode/bmi-0.bc` for `bmi.mpc`
-#         - it’s not necessarily circuit size but should be measured
-# - output: `{’runtime’: xxx, ‘rounds’: xxx, }`
-#     - check output is correct with testing lib
+def exec_cmd(cmd, computation_script) -> object:
+    proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    output, _ = proc.communicate(input=computation_script.encode())
+    lines = output.splitlines()
+
+    # print out output script output except the last line in utf-8
+    other_lines = [line.decode('utf-8') for line in lines[:-1]]
+    print('\n'.join(other_lines))
+
+    # return the last line as a json object
+    return json.loads(lines[-1])
+
+# read computaiton script from file or stdin
+computation_script = read_script(args.file)
+
+# execute compile script
+compile_output = exec_cmd(gen_compile_cmd(args), computation_script)
+print(compile_output)
+
+# execute executor script
+executor_output = exec_cmd(gen_executor_cmd(args), computation_script)
+print(executor_output)
+

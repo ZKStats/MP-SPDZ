@@ -11,7 +11,7 @@ import re
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import compile_computation, execute_silently
+from common_lib import compile_computation, execute_silently, read_script
 from Compiler.library import print_ln
 from timeit import timeit
 from datetime import datetime
@@ -50,14 +50,7 @@ def parse_args() -> Any:
 args = parse_args()
 
 # inject computation definition script
-if args.file is None:
-     script = sys.stdin.read()
-else:
-    # assumes that file is already opened
-    try:
-        script = args.file.read()
-    finally:
-        args.file.close()
+script = read_script(args.file)
 exec(script)
 
 prepare_data() # from computation definition script
