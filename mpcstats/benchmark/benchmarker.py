@@ -156,9 +156,9 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
         # parse the last line to a json object
         res = json.loads(lines[-1].decode('utf-8'))
 
-        res['script_name'] = cmd[0].name
-        res['max_mem_usage (KB)'] = max_mem_usage
-        res['script_exec_time (sec)'] = exec_time
+        res['script name'] = cmd[0].name
+        res['max mem usage (KB)'] = max_mem_usage
+        res['script exec time (sec)'] = exec_time
         return res
     
     except Exception as e:

@@ -2,23 +2,24 @@ import json
 import re
 from typing import Any
 
-def parser(attrs: object, line: str, key: str, regex: str) -> bool:
+def parser(attrs: object, line: str, keys: list[str], regex: str) -> bool:
     m = re.match(regex, line)
     if m is None:
         return False
-    attrs[key] = m.group(1)
+    for i in range(len(keys)):
+        attrs[keys[i]] = m.group(i + 1)
     return True
 
 def parse_execution_output(output: str) -> object:
     attrs = {}
 
     for line in output.split('\n'):
-        parser(attrs, line, 'Result', r'^Result: (.*)$') or \
-        parser(attrs, line, 'Statistical Security Parameter', r'^Using statistical security parameter (.*)$') or \
-        parser(attrs, line, 'Time (sec)', r'^Time = (.*) seconds.*$') or \
-        parser(attrs, line, 'Data sent (party 0 only)', r'^Data sent = (.*) \(.*$') or \
-        parser(attrs, line, 'Global data sent (all parties; MB)', r'^Global data sent = (.*) MB.*$') or \
-        parser(attrs, line, 'Global data sent (all parties; MB)', r'^Global data sent = (.*) MB.*$')
+        parser(attrs, line, ['result'], r'^Result: (.*)$') or \
+        parser(attrs, line, ['statistical security parameter'], r'^Using statistical security parameter (.*)$') or \
+        parser(attrs, line, ['time (sec)'], r'^Time = (.*) seconds.*$') or \
+        parser(attrs, line, ['data sent by party 0', 'rounds'], r'^Data sent = ([^\s]+) MB [^~]*~([^s]+) rounds.*$') or \
+        parser(attrs, line, ['global data sent (all parties; MB)'], r'^Global data sent = (.*) MB.*$') or \
+        True
 
     return attrs
 
@@ -26,7 +27,7 @@ def parse_compiler_output(output: str) -> object:
     attrs = {}
 
     for line in output.split('\n'):
-        parser(attrs, line, 'Virtual machine rounds', r'^ +\d*) [^ ]+$') or \
+        parser(attrs, line, ['Virtual machine rounds'], r'^ +\d*) [^ ]+$') or \
         True
 
     return attrs
