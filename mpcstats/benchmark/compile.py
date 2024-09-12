@@ -21,8 +21,6 @@ from typing import Any
 
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Compile script')
-    now = datetime.now().strftime('%Y%m%d_%H%M%S')
-
     parser.add_argument(
         '--name',
         type=str,

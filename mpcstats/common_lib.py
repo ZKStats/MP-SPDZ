@@ -19,8 +19,16 @@ from typing import Callable, Any, Literal, TextIO
 from dataclasses import dataclass
 
 # TODO generate list from type definition
-ProtocolsType = Literal['semi', 'mascot']
-Protocols = ['semi', 'mascot']
+ProtocolsType = Literal[
+    'semi',
+    'soho',
+    'mascot'
+]
+Protocols = [
+    'semi',
+    'soho',
+    'mascot',
+]
 
 DIMENTION_FILE = player_data_dir / 'file-dimentions.txt'
 DIMENTION_FILE_SEP = ' '
