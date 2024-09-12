@@ -33,6 +33,16 @@ class Dimention:
     def num_elements(self):
         return self.rows * self.cols
 
+def read_script(maybe_file: TextIO) -> str:
+    if maybe_file is None:
+        return sys.stdin.read()
+    else:
+        # assumes that file is already opened
+        try:
+            return args.file.read()
+        finally:
+            args.file.close()
+
 def create_party_data_files(dataset_file: Path, num_parties: int) -> None:
     if not dataset_file.exists():
         raise FileNotFoundError(f'{dataset_file} not found')
@@ -116,7 +126,7 @@ def get_aggr_party_data_vec(num_parties: int, row_index: int) -> list[sfix]:
 def compile_computation(
     name: str,
     computation: Callable[[], None],
-    flags: list[str],
+    flags: list[str] = [],
     cfg: Any = config.DefaultMPSPDZSetting(),
 ) -> None:
     '''
@@ -141,18 +151,21 @@ def compile_computation(
     compiler.compile_func()
     sys.argv = bak
 
+def exec_subprocess(cmd: str) -> str:
+    try:
+        res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
+        return res.stdout
+
+    except subprocess.CalledProcessError as e:
+        raise Exception(f'`{cmd}` failed ({e.returncode}): stdout: {e.stdout}, stderr: {e.stderr}')
+
 def execute_computation(
     num_parties: int,
     mpc_script: str,
     name: str,
 ) -> str:
     cmd = f'PLAYERS={num_parties} {mpc_script} {name}'
-    try:
-        res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
-        return res.stdout
-
-    except subprocess.CalledProcessError as e:
-        raise Exception(f'Executing MPC failed ({e.returncode}): stdout: {e.stdout}, stderr: {e.stderr}')
+    return exec_subprocess(cmd)
 
 def execute_silently(f: Callable[[], None]) -> Any:
     stdout_bak = sys.stdout

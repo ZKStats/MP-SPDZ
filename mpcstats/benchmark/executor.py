@@ -20,8 +20,6 @@ from datetime import datetime
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Program execution script')
-    now = datetime.now().strftime('%Y%m%d_%H%M%S')
-
     parser.add_argument(
         'protocol',
         type=str, 
@@ -61,6 +59,8 @@ cmd = f'PLAYERS={NUM_PARTIES} {mpc_script} {args.name}'
 output = exec_subprocess(cmd)
 
 out_obj = parse_execution_output(output)
+out_obj['protocol'] = args.protocol
+out_obj['prog_name'] = args.name
 
 if args.verbose:
     print(output)

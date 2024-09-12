@@ -78,7 +78,8 @@ files = [
 ]
 
 output = {
-    'program_name': args.name,
+    'edaBit': args.edabit,
+    'prog_name': args.name,
     'compilation_time': time_elapsed,
     'bytecodes': files,
 }
