@@ -40,11 +40,6 @@ def parse_args():
         help='MPC protocol',
     )
     parser.add_argument(
-        'dataset',
-        type=argparse.FileType('r'),
-        help='dataset csv file',
-    )
-    parser.add_argument(
         '--name',
         type=str,
         default=f'computation',

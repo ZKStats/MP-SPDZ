@@ -112,6 +112,7 @@ def load_party_data_files(num_parties: int) -> list[Matrix]:
             dim = dims[i]
 
             m = Matrix(dim.rows, dim.cols, sfix)
+
             for row in range(dim.cols):
                 for col in range(dim.cols):
                     m[row][col] = sfix.get_input_from(i)
@@ -119,15 +120,15 @@ def load_party_data_files(num_parties: int) -> list[Matrix]:
             ms.append(m)
     return ms
 
-def get_aggr_party_data_vec(num_parties: int, row_index: int) -> list[sfix]:
+def get_aggr_party_data_vec(num_parties: int, col_index: int) -> list[sfix]:
     # load party data into matrices
     ms = load_party_data_files(num_parties)
 
-    # aggregate matrix row of all parties
+    # aggregate matrix columns of all parties
     vec = []
     for party_id, m in enumerate(ms):
-        row = [m[row_index][i] for i in range(m.shape[1])]
-        vec[:] += row[:]
+        col = [m[i][col_index] for i in range(m.shape[0])]
+        vec[:] += col[:]
 
     return vec
 
