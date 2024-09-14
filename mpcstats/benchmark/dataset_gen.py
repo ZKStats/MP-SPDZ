@@ -14,9 +14,9 @@ import argparse
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Dataset gen script')
     parser.add_argument(
-        'num_columns',
+        'num_cols',
         type=int,
-        help='Number of columns',
+        help='Number of cols',
     )
     parser.add_argument(
         'num_rows',
@@ -35,23 +35,15 @@ def parse_args() -> Any:
         default=1,
         help='Standard deviation of normal distribution',
     )
-    parser.add_argument(
-        'dir_name',
-        type=str,
-        help='Directory where the dataset file is created',
-    )
     return parser.parse_args()
 
 args = parse_args()
 
-dataset_dir = datasets_dir / args.dir_name
-if dataset_dir.exists():
-    shutil.rmtree(dataset_dir)
-dataset_dir.mkdir()
+file_name = f'{args.num_cols}x{args.num_rows}.csv'
 
-with open(dataset_dir / 'data.csv', 'w') as file:
+with open(datasets_dir / file_name, 'w') as file:
     for _row in range(args.num_rows):
-        nums = [random.gauss(args.mean, args.stddev) for _ in range(args.num_columns)]
+        nums = [random.gauss(args.mean, args.stddev) for _ in range(args.num_cols)]
         line = ','.join([str(n) for n in nums])
         file.write(f'{line}\n')
 

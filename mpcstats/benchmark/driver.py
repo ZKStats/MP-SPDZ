@@ -64,7 +64,7 @@ def get_benchmark(computation_def: Path, protocol: str, program: str, category: 
 print(gen_header())
 
 # List all files in the directory
-computation_defs = [file for file in computation_def_dir.iterdir()]
+computation_defs = [file for file in computation_def_dir.iterdir() if file.is_file()]
 
 # print benchmark result rows
 for computation_def in computation_defs:

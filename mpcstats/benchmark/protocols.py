@@ -19,7 +19,6 @@ malicious_dishonest_majority = [(a, b, 'MDM') for a, b in [
 # bmr
 ]]
 
-
 # CowGear, ChaiGear,
 # N/A,
 # N/A,
