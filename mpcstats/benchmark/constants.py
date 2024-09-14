@@ -1,5 +1,5 @@
 EXEC_TIME_SEC = 'exec_time_sec'
-MAX_MEM_USAGE_KB = '_max_mem_usage_kb'
+MAX_MEM_USAGE_KB = 'max_mem_usage_kb'
 
 # columns
 CATEGORY = 'category'

@@ -121,7 +121,6 @@ def get_aggr_party_data_vecs(num_parties: int, col_indices: list[int]) -> list[l
         for vec_index, col_index in enumerate(col_indices):
             elem = [m[i][col_index] for i in range(m.shape[0])]
             vecs[vec_index][:] += elem[:]
-
     return vecs
 
 def compile_computation(
