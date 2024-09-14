@@ -10,7 +10,7 @@
 # Tiny, Tinier
 # BMR
 malicious_dishonest_majority = [(a, b, 'MDM') for a, b in [
-('mascot', 'mascot-party.x'),
+#('mascot', 'mascot-party.x'),
 #('lowgear', 'lowgear-party.x'),
 #('highgear', 'highgear-party.x'),
 ('', 'spdz2k-party.x'),

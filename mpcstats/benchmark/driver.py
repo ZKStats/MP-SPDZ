@@ -40,17 +40,18 @@ def gen_line(result: object) -> str:
         key = header[0]
         typ = header[1]
 
-        if typ == 'c':
+        col = ''
+        if comp != {} and typ == 'c':
             col = str(comp[key])
-        elif typ == 'e':
+        elif exe != {} and typ == 'e':
             col = str(exe[key])
-        elif typ == 'm':
+        elif meta != {} and typ == 'm':
             col = str(meta[key])
         cols.append(col)
 
     return ','.join(cols)
 
-def get_benchmark(computation_def: Path, protocol: str, program: str, category: str) -> None:
+def write_benchmark_result(computation_def: Path, protocol: str, program: str, category: str) -> None:
     cmd = [benchmark_dir / 'benchmarker.py', protocol, '--file', computation_def]
     result = subprocess.run(cmd, capture_output=True, text=True)
     result_obj = json.loads(result.stdout)
@@ -58,7 +59,9 @@ def get_benchmark(computation_def: Path, protocol: str, program: str, category: 
         'computation': computation_def.stem,
         'category': category,
     })
-    return gen_line(result_obj)
+    print(gen_line(result_obj))
+
+subprocess.run([benchmark_dir / 'gen_comp_defs.py'], check=True)
 
 # print header
 print(gen_header())
@@ -70,6 +73,5 @@ computation_defs = [file for file in computation_def_dir.iterdir() if file.is_fi
 for computation_def in computation_defs:
     for protocol, program, category in all_protocols:
         if protocol != '':
-            result_row = get_benchmark(computation_def, protocol, program, category)
-            print(result_row)
+            write_benchmark_result(computation_def, protocol, program, category)
 

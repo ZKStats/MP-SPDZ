@@ -21,7 +21,7 @@ def create_instance(template: Path, num_parties: int, dataset: Path) -> None:
                 line = apply_line_filter(line, num_parties, dataset)
                 inst_file.write(line)
 
-num_parties_list = [2, 3]
+num_parties_list = [3]
 datasets = [file for file in datasets_dir.iterdir()]
 templates = [file for file in computation_def_tmpl_dir.iterdir()]
 

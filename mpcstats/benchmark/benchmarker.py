@@ -67,7 +67,12 @@ def parse_args():
         type=str,
         help='Computation definition file. If not specified, the definition will be read from stdin',
     )
-    parser.add_argument('--num-parties', type=int, default=3, help='Number of participating parties')
+    parser.add_argument(
+        '--num-parties',
+        type=int,
+        default=3,
+        help='Number of participating parties',
+    )
     parser.add_argument(
         '--verbose',
         action='store_true',
@@ -111,7 +116,6 @@ def gen_executor_cmd(args: list[str]) -> list[str]:
 
 def monitor_mem_usage(proc: subprocess.Popen, mem_field: str, mem_get_sleep: float) -> int:
     max_mem_usage = 0
-    mem_field = 'rss'
     while proc.poll() is None:  # While the process is running
         ps_output = subprocess.run(['ps', '-p', str(proc.pid), '-o', f'{mem_field}='], capture_output=True, text=True)
         mem_usage = int(ps_output.stdout.strip())
@@ -140,7 +144,12 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
     try:
         max_mem_usage = monitor_mem_usage(proc, mem_field, mem_get_sleep) 
         lines = read_proc_stdout(proc)
+        if len(lines) == 0:
+            return {}
+
         exec_time = time.time() - beg_time
+
+        script = os.path.splitext(cmd[0].name)[0]
 
         # print out the script output excluding the last line
         if verbose:
@@ -150,7 +159,6 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
         # parse the last line to a json object
         res = json.loads(lines[-1].decode('utf-8'))
 
-        script = os.path.splitext(cmd[0].name)[0]
         res[f'{script}_max_mem_usage_kb'] = max_mem_usage
         res[f'{script}_exec_time_sec'] = exec_time
         return res
