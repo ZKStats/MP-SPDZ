@@ -8,23 +8,28 @@ computation_def_dir = benchmark_dir / 'computation_defs'
 import subprocess
 import json
 from protocols import all_protocols
+from constants import COMPUTATION, PROTOCOL, CATEGORY, ROUNDS, COMPILATION_TIME, TIME_SEC, COMPILE_MAX_MEM_USAGE_KB, EXECUTOR_MAX_MEM_USAGE_KB, TOTAL_BYTECODE_SIZE, EXECUTOR_EXEC_TIME_SEC, COMPILE_EXEC_TIME_SEC, STATISTICAL_SECURITY_PARAMETER, DATA_SENT_BY_PARTY_0, GLOBAL_DATA_SENT_MB, RESULT
+
+COMP='comp'
+EXEC='exec'
+META='meta'
 
 headers = [
-    ('computation', 'm'),
-    ('protocol', 'e'),
-    ('category', 'm'),
-    ('rounds', 'e'),
-    ('compilation_time', 'c'),
-    ('time_sec', 'e'),
-    ('compile_max_mem_usage_kb', 'c'),
-    ('executor_max_mem_usage_kb', 'e'),
-    ('total_bytecode_size', 'c'),
-    #('executor_exec_time_sec', 'e'),
-    #('compile_exec_time_sec', 'c'),
-    ('statistical security parameter', 'e'),
-    ('data_sent_by_party_0', 'e'),
-    ('global_data_sent_mb', 'e'),
-    ('result', 'e'),
+    (COMPUTATION, META),
+    (PROTOCOL, EXEC),
+    (CATEGORY, META),
+    (ROUNDS, EXEC),
+    (COMPILATION_TIME, COMP),
+    (TIME_SEC, EXEC),
+    (COMPILE_MAX_MEM_USAGE_KB, COMP),
+    (EXECUTOR_MAX_MEM_USAGE_KB, EXEC),
+    (TOTAL_BYTECODE_SIZE, COMP),
+    #(EXECUTOR_EXEC_TIME_SEC, EXEC),
+    #(COMPILE_EXEC_TIME_SEC, COMP),
+    (STATISTICAL_SECURITY_PARAMETER, EXEC),
+    (DATA_SENT_BY_PARTY_0, EXEC),
+    (GLOBAL_DATA_SENT_MB, EXEC),
+    (RESULT, EXEC),
 ]
 
 def gen_header() -> str:
@@ -41,11 +46,11 @@ def gen_line(result: object) -> str:
         typ = header[1]
 
         col = ''
-        if comp != {} and typ == 'c':
+        if comp != {} and typ == COMP:
             col = str(comp[key])
-        elif exe != {} and typ == 'e':
+        elif exe != {} and typ == EXEC:
             col = str(exe[key])
-        elif meta != {} and typ == 'm':
+        elif meta != {} and typ == META:
             col = str(meta[key])
         cols.append(col)
 

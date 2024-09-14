@@ -8,6 +8,7 @@ datasets_dir = benchmark_dir / 'datasets'
 import sys
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
+sys.path.append(f'{repo_root}/mpcstats/benchmark')
 
 from Compiler.compilerLib import Compiler
 from Compiler.types import sfix, Matrix
@@ -17,6 +18,7 @@ import config
 import os
 from typing import Callable, Any, Literal, TextIO
 from dataclasses import dataclass
+from constants import RESULT
 
 DIMENTION_FILE = player_data_dir / 'file-dimentions.txt'
 DIMENTION_FILE_SEP = ' '
@@ -108,17 +110,19 @@ def load_party_data_files(num_parties: int) -> list[Matrix]:
             ms.append(m)
     return ms
 
-def get_aggr_party_data_vec(num_parties: int, col_index: int) -> list[sfix]:
+def get_aggr_party_data_vecs(num_parties: int, col_indices: list[int]) -> list[list[sfix]]:
     # load party data into matrices
     ms = load_party_data_files(num_parties)
 
     # aggregate matrix columns of all parties
-    vec = []
-    for party_id, m in enumerate(ms):
-        col = [m[i][col_index] for i in range(m.shape[0])]
-        vec[:] += col[:]
+    vecs = [[] for _ in range(len(col_indices))]
 
-    return vec
+    for party_id, m in enumerate(ms):
+        for vec_index, col_index in enumerate(col_indices):
+            elem = [m[i][col_index] for i in range(m.shape[0])]
+            vecs[vec_index][:] += elem[:]
+
+    return vecs
 
 def compile_computation(
     name: str,
@@ -177,4 +181,4 @@ def execute_silently(f: Callable[[], None]) -> Any:
         sys.stdout = stdout_bak
 
 def write_result(value: Any) -> None:
-    print_ln('Result: %s', value)
+    print_ln(f'{RESULT}: %s', value)

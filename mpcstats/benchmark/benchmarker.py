@@ -16,6 +16,7 @@ import time
 from typing import List, Literal
 import json
 from common_lib import read_script 
+from constants import MAX_MEM_USAGE_KB, EXEC_TIME_SEC
 
 # 1.rss (Resident Set Size):
 #   - Measures the physical memory the process is currently using (in RAM).
@@ -159,8 +160,8 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
         # parse the last line to a json object
         res = json.loads(lines[-1].decode('utf-8'))
 
-        res[f'{script}_max_mem_usage_kb'] = max_mem_usage
-        res[f'{script}_exec_time_sec'] = exec_time
+        res[f'{script}_{MAX_MEM_USAGE_KB}'] = max_mem_usage
+        res[f'{script}_{EXEC_TIME_SEC}'] = exec_time
         return res
     
     except Exception as e:

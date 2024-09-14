@@ -11,6 +11,7 @@ sys.path.append(f'{repo_root}/mpcstats')
 
 from common_lib import execute_silently, exec_subprocess, DIMENTION_FILE, read_script
 from output_parser import parse_execution_output
+from constants import PROG_NAME, PROTOCOL
 from Compiler.types import sfix, Matrix
 
 import argparse
@@ -58,8 +59,8 @@ cmd = f'PLAYERS={NUM_PARTIES} {mpc_script} {args.name}'
 output = exec_subprocess(cmd)
 
 out_obj = parse_execution_output(output)
-out_obj['protocol'] = args.protocol
-out_obj['prog_name'] = args.name
+out_obj[PROTOCOL] = args.protocol
+out_obj[PROG_NAME] = args.name
 
 if args.verbose:
     print(output)

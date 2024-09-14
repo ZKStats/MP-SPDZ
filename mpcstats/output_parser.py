@@ -1,6 +1,7 @@
 import json
 import re
 from typing import Any
+from constants import STATISTICAL_SECURITY_PARAMETER, TIME_SEC, DATA_SENT_BY_PARTY_0, GLOBAL_DATA_SENT_MB, RESULT
 
 def parser(attrs: object, line: str, keys: list[str], regex: str) -> bool:
     m = re.match(regex, line)
@@ -14,11 +15,11 @@ def parse_execution_output(output: str) -> object:
     attrs = {}
 
     for line in output.split('\n'):
-        parser(attrs, line, ['result'], r'^Result: (.*)$') or \
-        parser(attrs, line, ['statistical security parameter'], r'^Using statistical security parameter (.*)$') or \
-        parser(attrs, line, ['time_sec'], r'^Time = (.*) seconds.*$') or \
-        parser(attrs, line, ['data_sent_by_party_0', 'rounds'], r'^Data sent = ([^\s]+) MB [^~]*~([^s]+) rounds.*$') or \
-        parser(attrs, line, ['global_data_sent_mb'], r'^Global data sent = (.*) MB.*$') or \
+        parser(attrs, line, [RESULT], r'^{RESULT}: (.*)$'.format(RESULT=RESULT)) or \
+        parser(attrs, line, [STATISTICAL_SECURITY_PARAMETER], r'^Using statistical security parameter (.*)$') or \
+        parser(attrs, line, [TIME_SEC], r'^Time = (.*) seconds.*$') or \
+        parser(attrs, line, [DATA_SENT_BY_PARTY_0, 'rounds'], r'^Data sent = ([^\s]+) MB [^~]*~([^s]+) rounds.*$') or \
+        parser(attrs, line, [GLOBAL_DATA_SENT_MB], r'^Global data sent = (.*) MB.*$') or \
         True
 
     return attrs

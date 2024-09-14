@@ -18,6 +18,7 @@ from datetime import datetime
 import argparse
 import json
 from typing import Any
+from constants import TOTAL_BYTECODE_SIZE, COMPILATION_TIME, PROG_NAME
 
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Compile script')
@@ -78,10 +79,10 @@ total_bytecode_size = sum(file['size'] for file in files)
 
 output = {
     'edaBit': args.edabit,
-    'prog_name': args.name,
-    'compilation_time': time_elapsed,
+    PROG_NAME: args.name,
+    COMPILATION_TIME: time_elapsed,
     'bytecodes': files,
-    'total_bytecode_size': total_bytecode_size,
+    TOTAL_BYTECODE_SIZE: total_bytecode_size,
 }
 
 print(json.dumps(output))
