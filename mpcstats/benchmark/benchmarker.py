@@ -15,7 +15,7 @@ import os
 import time
 from typing import List, Literal
 import json
-from common_lib import Protocols, ProtocolsType, read_script 
+from common_lib import read_script 
 
 # 1.rss (Resident Set Size):
 #   - Measures the physical memory the process is currently using (in RAM).
@@ -36,7 +36,6 @@ def parse_args():
     parser.add_argument(
         'protocol',
         type=str, 
-        choices=Protocols, 
         help='MPC protocol',
     )
     parser.add_argument(
@@ -151,9 +150,9 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
         # parse the last line to a json object
         res = json.loads(lines[-1].decode('utf-8'))
 
-        res['script name'] = cmd[0].name
-        res['max mem usage (KB)'] = max_mem_usage
-        res['script exec time (sec)'] = exec_time
+        script = os.path.splitext(cmd[0].name)[0]
+        res[f'{script}_max_mem_usage_kb'] = max_mem_usage
+        res[f'{script}_exec_time_sec'] = exec_time
         return res
     
     except Exception as e:
@@ -164,7 +163,7 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
 args = parse_args()
 
 # read computaiton script from file or stdin
-computation_script = read_script(args.file)
+computation_script = read_script(open(args.file) if args.file else None)
 
 # execute compile script
 compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_field, args.mem_get_sleep, args.verbose)
@@ -172,4 +171,4 @@ compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_fi
 # execute executor script
 executor_result = exec_cmd(gen_executor_cmd(args), computation_script, args.mem_field, args.mem_get_sleep, args.verbose)
 
-print([compile_result, executor_result], end='')
+print(json.dumps([compile_result, executor_result]), end='')

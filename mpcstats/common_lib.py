@@ -18,18 +18,6 @@ import os
 from typing import Callable, Any, Literal, TextIO
 from dataclasses import dataclass
 
-# TODO generate list from type definition
-ProtocolsType = Literal[
-    'semi',
-    'soho',
-    'mascot'
-]
-Protocols = [
-    'semi',
-    'soho',
-    'mascot',
-]
-
 DIMENTION_FILE = player_data_dir / 'file-dimentions.txt'
 DIMENTION_FILE_SEP = ' '
 
@@ -47,9 +35,9 @@ def read_script(maybe_file: TextIO) -> str:
     else:
         # assumes that file is already opened
         try:
-            return args.file.read()
+            return maybe_file.read()
         finally:
-            args.file.close()
+            maybe_file.close()
 
 def create_party_data_files(dataset_file: Path, num_parties: int) -> None:
     if not dataset_file.exists():
@@ -113,7 +101,7 @@ def load_party_data_files(num_parties: int) -> list[Matrix]:
 
             m = Matrix(dim.rows, dim.cols, sfix)
 
-            for row in range(dim.cols):
+            for row in range(dim.rows):
                 for col in range(dim.cols):
                     m[row][col] = sfix.get_input_from(i)
 

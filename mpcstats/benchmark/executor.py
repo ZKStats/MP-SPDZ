@@ -6,16 +6,16 @@ mpcstats_dir = repo_root / 'mpcstats'
 benchmark_dir = mpcstats_dir / 'benchmark'
 
 import sys
-import re
-import json
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import execute_silently, exec_subprocess, Protocols, ProtocolsType, DIMENTION_FILE, read_script
+from common_lib import execute_silently, exec_subprocess, DIMENTION_FILE, read_script
 from output_parser import parse_execution_output
 from Compiler.types import sfix, Matrix
 
 import argparse
+import re
+import json
 from datetime import datetime
 
 def parse_args():
@@ -23,7 +23,6 @@ def parse_args():
     parser.add_argument(
         'protocol',
         type=str, 
-        choices=Protocols, 
         help='MPC protocol',
     )
     parser.add_argument(

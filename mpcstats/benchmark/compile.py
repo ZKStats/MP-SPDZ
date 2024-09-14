@@ -74,12 +74,14 @@ files = [
     in bytecode_dir.rglob(f'{args.name}-*.bc')
     if prog_name_re.match(file.name)
 ]
+total_bytecode_size = sum(file['size'] for file in files)
 
 output = {
     'edaBit': args.edabit,
-    'prog name': args.name,
-    'compilation time': time_elapsed,
+    'prog_name': args.name,
+    'compilation_time': time_elapsed,
     'bytecodes': files,
+    'total_bytecode_size': total_bytecode_size,
 }
 
 print(json.dumps(output))

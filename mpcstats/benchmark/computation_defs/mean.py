@@ -5,7 +5,7 @@ NUM_PARTIES = 3
 COL_INDEX = 1
 
 def prepare_data():
-    dataset_file = datasets_dir / 'wine' / 'wine.data.txt'
+    dataset_file = datasets_dir / 'wine' / 'wine.data.small.txt'
     create_party_data_files(dataset_file, NUM_PARTIES)
 
 def computation():
