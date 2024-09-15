@@ -60,8 +60,8 @@ def parse_args():
     parser.add_argument(
         '--mem-get-sleep',
         type=float, 
-        default=0.1,
-        help='Time interval (in seconds) to sleep between memory retrievals'
+        default=1,
+        help='Time interval (in seconds) to sleep between memory retrievals for execution'
     )
     parser.add_argument(
         '--file',
@@ -175,7 +175,7 @@ args = parse_args()
 computation_script = read_script(open(args.file) if args.file else None)
 
 # execute compile script
-compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_field, args.mem_get_sleep, args.verbose)
+compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_field, 0.1, args.verbose)
 
 # execute executor script
 executor_result = exec_cmd(gen_executor_cmd(args), computation_script, args.mem_field, args.mem_get_sleep, args.verbose)
