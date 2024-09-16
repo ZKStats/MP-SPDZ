@@ -4,9 +4,12 @@ from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
 benchmark_dir = repo_root / 'mpcstats' / 'benchmark'
 computation_def_dir = benchmark_dir / 'computation_defs'
+templates_dir = benchmark_dir / 'computation_defs' / 'templates'
 
+import argparse
 import subprocess
 import json
+from typing import Any
 from protocols import all_protocols
 from constants import COMPUTATION, PROTOCOL, CATEGORY, ROUNDS, COMPILATION_TIME, EXECUTION_TIME, COMPILE_MAX_MEM_USAGE_KB, EXECUTOR_MAX_MEM_USAGE_KB, TOTAL_BYTECODE_SIZE, EXECUTOR_EXEC_TIME_SEC, COMPILE_EXEC_TIME_SEC, STATISTICAL_SECURITY_PARAMETER, DATA_SENT_BY_PARTY_0, GLOBAL_DATA_SENT_MB, RESULT
 
@@ -32,6 +35,46 @@ headers = [
     (RESULT, EXEC),
 ]
 
+scenarios = [
+    ['all'],
+    ['mean'],
+    ['where'],
+    ['join'],
+]
+
+def scenario_desc() -> str:
+    lines = []
+    for id, names in enumerate(scenarios):
+        names_str = ','.join(names)
+        lines.append(f'{id}: {names_str}')
+
+    return ' '.join(lines)
+
+def parse_args() -> Any:
+    parser = argparse.ArgumentParser(description='Scenario setup script')
+    parser.add_argument(
+        'id',
+        type=int,
+        help=f'Scenario id: {scenario_desc()}',
+    )
+    return parser.parse_args()
+
+def activate_all() -> None:
+    for file in templates_dir.iterdir():
+        if file.name.startswith('_'):
+            new_name = file.with_name(file.name[1:])
+            file.rename(templates_dir / new_name)
+
+def deactivate_all() -> None:
+    for file in templates_dir.iterdir():
+        if not file.name.startswith('_'):
+            new_name = file.with_name(f'_{file.name}')
+            file.rename(templates_dir / new_name)
+
+def activate(name: str) -> None:
+    file = templates_dir / f'_{name}.py'
+    file.rename(templates_dir / f'{name}.py')
+
 def gen_header() -> str:
     return ','.join([header[0] for header in headers])
 
@@ -56,7 +99,7 @@ def gen_line(result: object) -> str:
 
     return ','.join(cols)
 
-def write_benchmark_result(computation_def: Path, protocol: str, program: str, category: str) -> None:
+def write_benchmark_result(computation_def: Path, protocol: str, category: str) -> None:
     cmd = [benchmark_dir / 'benchmarker.py', protocol, '--file', computation_def]
     result = subprocess.run(cmd, capture_output=True, text=True)
     result_obj = json.loads(result.stdout)
@@ -65,6 +108,19 @@ def write_benchmark_result(computation_def: Path, protocol: str, program: str, c
         'category': category,
     })
     print(gen_line(result_obj))
+
+args = parse_args()
+
+# set up scenario
+if args.id == 0:
+    activate_all()
+
+elif args.id > 0:
+    deactivate_all()
+    names = scenarios[args.id]
+    for name in names:
+        activate(name)
+        print(f'Activated {name}.py')
 
 subprocess.run([benchmark_dir / 'gen_comp_defs.py'], check=True)
 
@@ -76,7 +132,7 @@ computation_defs = [file for file in computation_def_dir.iterdir() if file.is_fi
 
 # print benchmark result rows
 for computation_def in computation_defs:
-    for protocol, program, category in all_protocols:
+    for protocol, _, category in all_protocols:
         if protocol != '':
-            write_benchmark_result(computation_def, protocol, program, category)
+            write_benchmark_result(computation_def, protocol, category)
 

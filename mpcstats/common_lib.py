@@ -103,24 +103,21 @@ def load_party_data_to_matrices(num_parties: int, join_tweak: (int, int) = None)
             dim = dims[i]
 
             m = Matrix(dim.rows, dim.cols, sfix)
-
             for row in range(dim.rows):
                 for col in range(dim.cols):
                     m[row][col] = sfix.get_input_from(i)
-
             ms.append(m)
 
     if join_tweak is not None:
         assert num_parties == 2
         m1, m2 = ms 
-        m1_col, m2_col = join_tweak
+        m1_row, m2_row = join_tweak
 
-        # shuffle m1 col and copy to m2_col
-        col = [m1[row][m1_col] for row in range(dims[0].rows)]
-        random.shuffle(col)
-        # number of m2 rows can be smaller than number of m1 rows
-        for row in range(dims[1].rows):
-            m2[row][m2_col] = col[row]
+        # shuffle m1 row and copy to m2_row
+        src_row = [m1[m1_row][i] for i in range(dims[0].cols)]
+        random.shuffle(src_row)
+        for i in range(dims[1].cols):
+            m2[m2_row][i] = src_row[i]
 
     return ms
 
@@ -153,7 +150,6 @@ def compile_computation(
         sfix.round_nearest = cfg.round_nearest
         sfix.set_precision(cfg.f, cfg.k)
         computation()
-
     compiler = Compiler(flags)
     compiler.register_function(name)(init_and_compute)
 

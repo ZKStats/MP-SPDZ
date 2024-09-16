@@ -34,6 +34,17 @@ def parse_args() -> Any:
         help='Show output from Comipler module',
     )
     parser.add_argument(
+        '--binary',
+        type=int,
+        default=0,
+        help='Compile binary circuit with specified bit length of sit',
+    )
+    parser.add_argument(
+        '--ring',
+        action='store_true',
+        help='Compile for rings',
+    )
+    parser.add_argument(
         '--file',
         type=argparse.FileType('r'),
         default=None,
@@ -59,6 +70,12 @@ def f():
     flags = []
     if args.edabit:
         flags.append('--edabit')
+    if args.binary > 0:
+        flags.append('--binary')
+        flags.append(args.binary)
+    if args.ring:
+        flags.append('--ring')
+        flags.append('128')
     compile_computation(args.name, computation, flags)
 
 def g():
@@ -79,6 +96,7 @@ total_bytecode_size = sum(file['size'] for file in files)
 
 output = {
     'edaBit': args.edabit,
+    'binary': args.binary,
     PROG_NAME: args.name,
     COMPILATION_TIME: time_elapsed,
     'bytecodes': files,
