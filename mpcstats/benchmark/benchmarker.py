@@ -75,6 +75,11 @@ def parse_args():
         help='Number of participating parties',
     )
     parser.add_argument(
+        '--comp-args',
+        type=str,
+        help='Arguments for `compile.py`',
+    )
+    parser.add_argument(
         '--verbose',
         action='store_true',
         help='Show output from internally called scripts',
@@ -92,6 +97,8 @@ def exec_ps(pid: int, field: MemoryFieldsType) -> int:
 def gen_compile_cmd(args: list[str]) -> list[str]:
     compile_script = benchmark_dir / 'compile.py'
     opts = []
+    if args.comp_args is not None:
+        opts.extend(args.comp_args.split())
     if args.name:
         opts.extend(['--name', args.name])
     if args.file:

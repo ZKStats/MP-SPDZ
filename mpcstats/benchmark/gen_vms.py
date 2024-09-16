@@ -11,10 +11,15 @@ import subprocess
 import os
 from protocols import all_protocols
 
-for _, program, _ in all_protocols:
+for _, program, _, cflags, _ in all_protocols:
     print(f'Compiling {program}...')
+
+    env = os.environ.copy()
+    if cflags:
+        env['CFLAGS'] = cflags
+
     cmd = ['make', f'-j{os.cpu_count()}', program]
-    res = subprocess.run(cmd, cwd=repo_root, capture_output=True, text=True)
+    res = subprocess.run(cmd, cwd=repo_root, capture_output=True, text=True, env=env)
 
     if res.returncode != 0:
         print(f'--> Failed w/ return code {res.returncode}. {res.stderr}')

@@ -19,7 +19,7 @@ META='meta'
 
 headers = [
     (COMPUTATION, META),
-    (PROTOCOL, EXEC),
+    (PROTOCOL, META),
     (CATEGORY, META),
     (ROUNDS, EXEC),
     (COMPILATION_TIME, COMP),
@@ -51,7 +51,7 @@ def scenario_desc() -> str:
     return ' '.join(lines)
 
 def parse_args() -> Any:
-    parser = argparse.ArgumentParser(description='Scenario setup script')
+    parser = argparse.ArgumentParser(description='Benchmarking driver')
     parser.add_argument(
         'id',
         type=int,
@@ -99,13 +99,24 @@ def gen_line(result: object) -> str:
 
     return ','.join(cols)
 
-def write_benchmark_result(computation_def: Path, protocol: str, category: str) -> None:
-    cmd = [benchmark_dir / 'benchmarker.py', protocol, '--file', computation_def]
+def write_benchmark_result(
+    computation_def: Path,
+    protocol: str,
+    comp_args: str,
+    cflags: str,
+    category: str) -> None:
+
+    cmd = [benchmark_dir / 'benchmarker.py', protocol, '--file', computation_def, '--comp-args', comp_args]
     result = subprocess.run(cmd, capture_output=True, text=True)
-    result_obj = json.loads(result.stdout)
+    try:
+        result_obj = json.loads(result.stdout)
+    except:
+        print(result)
+        raise
     result_obj.append({
         'computation': computation_def.stem,
         'category': category,
+        'protocol': protocol,
     })
     print(gen_line(result_obj))
 
@@ -132,7 +143,12 @@ computation_defs = [file for file in computation_def_dir.iterdir() if file.is_fi
 
 # print benchmark result rows
 for computation_def in computation_defs:
-    for protocol, _, category in all_protocols:
+    for protocol, _, comp_args, cflags, category in all_protocols:
         if protocol != '':
-            write_benchmark_result(computation_def, protocol, category)
+            write_benchmark_result(
+                computation_def,
+                protocol,
+                comp_args,
+                cflags,
+                category)
 

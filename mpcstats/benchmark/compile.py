@@ -41,7 +41,7 @@ def parse_args() -> Any:
     )
     parser.add_argument(
         '--ring',
-        action='store_true',
+        type=int,
         help='Compile for rings',
     )
     parser.add_argument(
@@ -75,7 +75,8 @@ def f():
         flags.append(args.binary)
     if args.ring:
         flags.append('--ring')
-        flags.append('128')
+        flags.append(args.ring)
+
     compile_computation(args.name, computation, flags)
 
 def g():
