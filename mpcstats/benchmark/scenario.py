@@ -14,6 +14,7 @@ scenarios = [
     ['all'],
     ['mean'],
     ['where'],
+    ['join'],
 ]
 
 def scenario_desc() -> str:

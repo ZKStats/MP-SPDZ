@@ -19,6 +19,7 @@ import os
 from typing import Callable, Any, Literal, TextIO
 from dataclasses import dataclass
 from constants import RESULT
+import random
 
 DIMENTION_FILE = player_data_dir / 'file-dimentions.txt'
 DIMENTION_FILE_SEP = ' '
@@ -94,7 +95,7 @@ def load_file_dimentions() -> list[Dimention]:
 
 # has to be called from inside computation
 # assumes that DIMENTION_FILE has already been created
-def load_party_data_files(num_parties: int) -> list[Matrix]:
+def load_party_data_to_matrices(num_parties: int, join_tweak: (int, int) = None) -> list[Matrix]:
     dims = load_file_dimentions()
     ms = []
     for i in range(num_parties):
@@ -108,11 +109,24 @@ def load_party_data_files(num_parties: int) -> list[Matrix]:
                     m[row][col] = sfix.get_input_from(i)
 
             ms.append(m)
+
+    if join_tweak is not None:
+        assert num_parties == 2
+        m1, m2 = ms 
+        m1_col, m2_col = join_tweak
+
+        # shuffle m1 col and copy to m2_col
+        col = [m1[row][m1_col] for row in range(dims[0].rows)]
+        random.shuffle(col)
+        # number of m2 rows can be smaller than number of m1 rows
+        for row in range(dims[1].rows):
+            m2[row][m2_col] = col[row]
+
     return ms
 
 def get_aggr_party_data_vecs(num_parties: int, col_indices: list[int]) -> list[list[sfix]]:
     # load party data into matrices
-    ms = load_party_data_files(num_parties)
+    ms = load_party_data_to_matrices(num_parties)
 
     # aggregate matrix columns of all parties
     vecs = [[] for _ in range(len(col_indices))]
