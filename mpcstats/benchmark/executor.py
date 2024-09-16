@@ -57,7 +57,6 @@ prepare_data() # from computation definition script
 mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
 cmd = f'PLAYERS={NUM_PARTIES} {mpc_script} {args.name}'
 output = exec_subprocess(cmd)
-
 out_obj = parse_execution_output(output)
 out_obj[PROTOCOL] = args.protocol
 out_obj[PROG_NAME] = args.name

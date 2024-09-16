@@ -13,6 +13,7 @@ import subprocess
 scenarios = [
     ['all'],
     ['mean'],
+    ['where'],
 ]
 
 def scenario_desc() -> str:
