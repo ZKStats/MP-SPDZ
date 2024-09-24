@@ -1,5 +1,3 @@
-# Dishonest majority, malicious, secret sharing
-
 dishonest_majority_malicious = [t + ('DM-M-SS',) for t in [
 #('mascot', 'mascot-party.x', '', ''), # ok
 #('mama', 'mama-party.x', '', ''), # ok
