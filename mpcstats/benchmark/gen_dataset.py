@@ -24,6 +24,17 @@ def parse_args() -> Any:
         help='Number of rows',
     )
     parser.add_argument(
+        '--multiplier',
+        type=int,
+        default=100,
+        help='Multiplier to randomly generated numbers',
+    )
+    parser.add_argument(
+        '--int',
+        action='store_true',
+        help='Use integers only',
+    )
+    parser.add_argument(
         '--mean',
         type=float,
         default=0,
@@ -39,11 +50,17 @@ def parse_args() -> Any:
 
 args = parse_args()
 
-file_name = f'{args.num_cols}x{args.num_rows}.csv'
+opt = ''
+if args.int:
+    opt += '-int'
+file_name = f'{args.num_cols}x{args.num_rows}{opt}.csv'
 
 with open(datasets_dir / file_name, 'w') as file:
     for _row in range(args.num_rows):
-        nums = [random.gauss(args.mean, args.stddev) for _ in range(args.num_cols)]
+        nums = [random.gauss(args.mean, args.stddev) * args.multiplier for _ in range(args.num_cols)]
+        if args.int:
+            nums = [int(n) for n in nums]
         line = ','.join([str(n) for n in nums])
         file.write(f'{line}\n')
+
 

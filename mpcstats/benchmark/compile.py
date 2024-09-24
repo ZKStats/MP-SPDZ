@@ -13,6 +13,7 @@ sys.path.append(f'{repo_root}/mpcstats')
 
 from common_lib import compile_computation, execute_silently, read_script
 from Compiler.library import print_ln
+from Compiler.util import if_else
 from timeit import timeit
 from datetime import datetime
 import argparse
@@ -36,13 +37,12 @@ def parse_args() -> Any:
     parser.add_argument(
         '--binary',
         type=int,
-        default=0,
         help='Compile binary circuit with specified bit length of sit',
     )
     parser.add_argument(
         '--ring',
         type=int,
-        help='Compile for rings',
+        help='Compile for rings of specified bit length',
     )
     parser.add_argument(
         '--file',
@@ -70,8 +70,9 @@ def f():
     flags = []
     if args.edabit:
         flags.append('--edabit')
-    if args.binary > 0:
-        flags.append('--binary')
+    if args.binary:
+        flags.append('-G')
+        flags.append('-B')
         flags.append(args.binary)
     if args.ring:
         flags.append('--ring')

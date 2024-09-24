@@ -148,6 +148,7 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
     proc.stdin.write(computation_script.encode())
     proc.stdin.close()
 
+    lines = []
     beg_time = time.time()
     try:
         max_mem_usage = monitor_mem_usage(proc, mem_field, mem_get_sleep) 
@@ -172,7 +173,7 @@ def exec_cmd(cmd: list[str], computation_script: str, mem_field: str, mem_get_sl
         return res
     
     except Exception as e:
-        print(f"Error occurred while monitoring subprocess: {e}")
+        print(f'Error occurred while monitoring subprocess: {e}\n{lines}')
         proc.terminate()
         raise    
 
@@ -180,6 +181,9 @@ args = parse_args()
 
 # read computaiton script from file or stdin
 computation_script = read_script(open(args.file) if args.file else None)
+
+# should run for each computation script
+#subprocess.run([scripts_dir / 'setup-ssl.sh', num_parties])
 
 # execute compile script
 compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_field, 0.1, args.verbose)

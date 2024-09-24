@@ -5,6 +5,7 @@ repo_root = Path(__file__).parent.parent.parent
 benchmark_dir = repo_root / 'mpcstats' / 'benchmark'
 computation_def_dir = benchmark_dir / 'computation_defs'
 templates_dir = benchmark_dir / 'computation_defs' / 'templates'
+scripts_dir = repo_root / 'Scripts'
 
 import argparse
 import subprocess
@@ -37,6 +38,7 @@ headers = [
 
 scenarios = [
     ['all'],
+    ['test'],
     ['mean'],
     ['where'],
     ['join'],
@@ -52,6 +54,11 @@ def scenario_desc() -> str:
 
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Benchmarking driver')
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        help='Show output from Comipler module',
+    )
     parser.add_argument(
         'id',
         type=int,
@@ -104,14 +111,18 @@ def write_benchmark_result(
     protocol: str,
     comp_args: str,
     cflags: str,
-    category: str) -> None:
+    category: str,
+    args: Any) -> None:
 
     cmd = [benchmark_dir / 'benchmarker.py', protocol, '--file', computation_def, '--comp-args', comp_args]
+    if args.verbose:
+        cmd.append('--verbose')
+
     result = subprocess.run(cmd, capture_output=True, text=True)
     try:
         result_obj = json.loads(result.stdout)
     except:
-        print(result)
+        print(str(result).replace('\\n', '\n'))
         raise
     result_obj.append({
         'computation': computation_def.stem,
@@ -133,6 +144,10 @@ elif args.id > 0:
         activate(name)
         print(f'Activated {name}.py')
 
+# generate required VMs
+subprocess.run([benchmark_dir / 'gen_vms.py'], check=True)
+
+# generate computation defs from the tempaltes
 subprocess.run([benchmark_dir / 'gen_comp_defs.py'], check=True)
 
 # print header
@@ -140,6 +155,12 @@ print(gen_header())
 
 # List all files in the directory
 computation_defs = [file for file in computation_def_dir.iterdir() if file.is_file()]
+
+# validate protocols
+for protocol, _, comp_args, cflags, category in all_protocols:
+    if protocol.endswith('.sh'):
+        print(f'Drop .sh from {protocol}')
+        exit(0)
 
 # print benchmark result rows
 for computation_def in computation_defs:
@@ -150,5 +171,6 @@ for computation_def in computation_defs:
                 protocol,
                 comp_args,
                 cflags,
-                category)
+                category,
+                args)
 

@@ -11,8 +11,10 @@ sys.path.append(f'{repo_root}/mpcstats')
 sys.path.append(f'{repo_root}/mpcstats/benchmark')
 
 from Compiler.compilerLib import Compiler
-from Compiler.types import sfix, Matrix
+from Compiler.types import sfix
+from Compiler.types import Matrix
 from Compiler.library import print_ln
+from Compiler.util import if_else
 import subprocess
 import config
 import os
@@ -167,7 +169,8 @@ def exec_subprocess(cmd: str) -> str:
         return res.stdout
 
     except subprocess.CalledProcessError as e:
-        raise Exception(f'`{cmd}` failed ({e.returncode}): stdout: {e.stdout}, stderr: {e.stderr}')
+        print(e)
+        raise
 
 def execute_computation(
     num_parties: int,

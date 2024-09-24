@@ -12,7 +12,7 @@ import os
 from protocols import all_protocols
 
 for _, program, _, cflags, _ in all_protocols:
-    print(f'Compiling {program}...')
+    print(f'Compiling {program} w/ cflags={cflags}...')
 
     env = os.environ.copy()
     if cflags:
