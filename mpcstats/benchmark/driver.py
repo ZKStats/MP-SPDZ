@@ -110,7 +110,6 @@ def write_benchmark_result(
     computation_def: Path,
     protocol: str,
     comp_args: str,
-    cflags: str,
     category: str,
     args: Any) -> None:
 
@@ -157,20 +156,19 @@ print(gen_header())
 computation_defs = [file for file in computation_def_dir.iterdir() if file.is_file()]
 
 # validate protocols
-for protocol, _, comp_args, cflags, category in all_protocols:
+for protocol, _, comp_args, category in all_protocols:
     if protocol.endswith('.sh'):
         print(f'Drop .sh from {protocol}')
         exit(0)
 
 # print benchmark result rows
 for computation_def in computation_defs:
-    for protocol, _, comp_args, cflags, category in all_protocols:
+    for protocol, _, comp_args, category in all_protocols:
         if protocol != '':
             write_benchmark_result(
                 computation_def,
                 protocol,
                 comp_args,
-                cflags,
                 category,
                 args)
 

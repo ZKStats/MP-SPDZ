@@ -1,9 +1,0 @@
-computation,protocol,category,rounds,compilation_time,time_sec,compile_max_mem_usage_kb,executor_max_mem_usage_kb,total_bytecode_size,statistical_security_parameter,data_sent_by_party_0,global_data_sent_mb,result
-pstdev_10x100000_3,semi,SHDM,1134,,2.13273,,26128,,40,71.4769,213.715,0.62579
-pstdev_10x100000_3,hemi,SHDM,814,,0.290846,,26272,,40,7.02746,20.3672,0.62579
-pstdev_10x100000_3,temi,SHDM,832,,0.215166,,25712,,40,8.58375,17.1956,0.62579
-pstdev_10x100000_3,soho,SHDM,792,,0.702419,,26128,,40,17.7283,49.6535,0.62579
-mode_10x100000_3,semi,SHDM,1134,,2.30373,,25808,,40,71.4769,213.715,0.62579
-mode_10x100000_3,hemi,SHDM,814,,0.284746,,26128,,40,7.02746,20.3672,0.62579
-mode_10x100000_3,temi,SHDM,832,,0.251262,,26320,,40,8.58391,17.1955,0.62579
-mode_10x100000_3,soho,SHDM,792,,0.709731,,25808,,40,17.7282,49.6534,0.62579
