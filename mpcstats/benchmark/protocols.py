@@ -1,7 +1,7 @@
 dishonest_majority_malicious = [t + ('DM-M-SS',) for t in [
 #('mascot', 'mascot-party.x', '', ''), # ok
 #('mama', 'mama-party.x', '', ''), # ok
-#('spdz2k', 'spdz2k-party.x', '--ring 128', '-DRING_SIZE=128'), # not working
+('spdz2k', 'spdz2k-party.x', '--ring 128', '-DRING_SIZE=256'), # not working
 #('lowgear', 'lowgear-party.x', '', ''), # ok
 #('highgear', 'highgear-party.x', '', ''), # ok
 ]]
@@ -19,13 +19,17 @@ dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
 #('soho', 'soho-party.x', '', ''), # ok
 ]]
 
+dishonest_majority_yao = [t + ('DM-YAO',) for t in [
+#('yao', 'yao-party.x', '', ''), # binary circuit only
+]]
+
 # Honest majority, malicious
 honest_majority_malicious = [t + ('HM-M',) for t in [
 #('ring', 'replicated-ring-party.x', '--ring 128', ''), # ok
 #('ps-rep-ring', 'ps-rep-ring-party.x', '--ring 128', ''), # ok
 #('mal-rep-ring', 'malicious-rep-ring-party.x', '--ring 128', ''), # ok
 #('sy-rep-ring', 'sy-rep-ring-party.x', '--ring 128', ''), # ok
-#('rep4-ring', 'rep4-ring-party.x', '--ring 128', ''), # not working
+#('rep4-ring', 'rep4-ring-party.x', '--ring 128', ''), # ok, ssl, 4 parties
 #('ps-rep-field', 'ps-rep-field-party.x', '', ''), # ok
 #('sy-rep-field', 'sy-rep-field-party.x', '', ''), # ok
 #('mal-rep-field', 'malicious-rep-field-party.x', '', ''), # ok
@@ -42,17 +46,18 @@ honest_majority_non_malicious = [t + ('HM-NM',) for t in [
 
 # BMR
 bmr = [t + ('BMR',) for t in [
-#('real-bmr', 'real-bmr-party.x', '', ''), # ok
-#('semi-bmr', 'semi-bmr-party.x', '', ''), # ok
-#('shamir-bmr', 'shamir-bmr-party.x', '', ''), # ok
-#('mal-shamir-bmr', 'mal-shamir-bmr-party.x', '', ''), # ok
-#('rep-bmr', 'rep-bmr-party.x', '', ''), # ok
-#('mal-rep-bmr', 'mal-rep-bmr-party.x', '', ''), # ok
+#('real-bmr', 'real-bmr-party.x', '', ''), # binary circuit only
+#('semi-bmr', 'semi-bmr-party.x', '', ''), # binary circuit only
+#('shamir-bmr', 'shamir-bmr-party.x', '', ''), # binary circuit only
+#('mal-shamir-bmr', 'mal-shamir-bmr-party.x', '', ''), # binary circuit only
+#('rep-bmr', 'rep-bmr-party.x', '', ''), # binary circuit only
+#('mal-rep-bmr', 'mal-rep-bmr-party.x', '', ''), # binary circuit only
 ]]
 
 all_protocols = dishonest_majority_malicious
 all_protocols += dishonest_majority_covert
 all_protocols += dishonest_majority_semi_honest
+all_protocols += dishonest_majority_yao
 all_protocols += honest_majority_malicious
 all_protocols += honest_majority_non_malicious
 all_protocols += bmr
