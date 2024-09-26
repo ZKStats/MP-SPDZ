@@ -23,6 +23,19 @@ By executing `./gen_comp_defs.py`, computaion definition instances for all datas
 
 Computation definitions whose names start with '_' are ignored.
 
+### Setting up ssl
+In `mpcstats/benchmark` directory, run:
+
+```
+../../Scripts/setup-ssl.sh 4
+```
+
 ## Running the benchmark
-Execute the `./driver.py` to run the benchmarks and output the results as a CSV to stdout.
+Execute the `./driver.py [scenario ID]` to run the benchmarks and output the results as a CSV to stdout.
+
+To get the list of secnario IDs, run:
+
+```
+./driver.sh -h
+```
 

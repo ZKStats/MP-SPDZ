@@ -68,6 +68,10 @@ def mean(data: list[sfix]) -> sfix:
     return _mean(data)[0]
 
 
+def mean_incl_magic_num(data: list[sfix]) -> sfix:
+    return sum(data) / len(data)
+
+
 def median(data: list[sfix]):
     # TODO: Check if Array.create_from is properly constrained // if I dont put reference, it's just from the mp-spdz doc itself
     data = Array.create_from(data)
