@@ -5,6 +5,5 @@ logs/
 !Programs/Source/
 computation_defs/*
 !computation_defs/templates/
-datasets/
 *.csv
 

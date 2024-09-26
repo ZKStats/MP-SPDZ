@@ -6,6 +6,7 @@ benchmark_dir = repo_root / 'mpcstats' / 'benchmark'
 computation_def_dir = benchmark_dir / 'computation_defs'
 templates_dir = benchmark_dir / 'computation_defs' / 'templates'
 scripts_dir = repo_root / 'Scripts'
+datasets_dir = benchmark_dir / 'datasets'
 
 import argparse
 import subprocess
@@ -55,32 +56,38 @@ def scenario_desc() -> str:
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Benchmarking driver')
     parser.add_argument(
-        '--verbose',
-        action='store_true',
-        help='Show output from Comipler module',
-    )
-    parser.add_argument(
         'id',
         type=int,
         help=f'Scenario id: {scenario_desc()}',
     )
+    parser.add_argument(
+        'dataset', 
+        type=int, 
+        choices=[100, 1000, 10000, 100000], 
+        help='Dataset to use. 100, 1000, 10000 or 100000',
+    )
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        help='Show output from Comipler module',
+    )
     return parser.parse_args()
 
-def activate_all() -> None:
-    for file in templates_dir.iterdir():
+def activate_all(dir: Path) -> None:
+    for file in dir.iterdir():
         if file.name.startswith('_'):
             new_name = file.with_name(file.name[1:])
-            file.rename(templates_dir / new_name)
+            file.rename(dir / new_name)
 
-def deactivate_all() -> None:
-    for file in templates_dir.iterdir():
+def deactivate_all(dir: Path) -> None:
+    for file in dir.iterdir():
         if not file.name.startswith('_'):
             new_name = file.with_name(f'_{file.name}')
-            file.rename(templates_dir / new_name)
+            file.rename(dir / new_name)
 
-def activate(name: str) -> None:
-    file = templates_dir / f'_{name}.py'
-    file.rename(templates_dir / f'{name}.py')
+def activate(dir: Path, name: str, ext: str) -> None:
+    file = dir / f'_{name}.{ext}'
+    file.rename(dir / f'{name}.{ext}')
 
 def gen_header() -> str:
     return ','.join([header[0] for header in headers])
@@ -134,14 +141,18 @@ args = parse_args()
 
 # set up scenario
 if args.id == 0:
-    activate_all()
+    activate_all(templates_dir)
 
 elif args.id > 0:
-    deactivate_all()
+    deactivate_all(templates_dir)
     names = scenarios[args.id]
     for name in names:
-        activate(name)
-        print(f'Activated {name}.py')
+        activate(templates_dir, name, 'py')
+        print(f'Activated {name} scenario')
+
+# activate targetted dataset
+deactivate_all(datasets_dir)
+activate(datasets_dir, f'10x{args.dataset}', 'csv')
 
 # generate required VMs
 subprocess.run([benchmark_dir / 'gen_vms.py'], check=True)
