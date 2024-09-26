@@ -149,7 +149,7 @@ def join(data1: Matrix, data2: Matrix, data1_column_index: int, data2_column_ind
 
 def covariance(data1: list[sfix], data2: list[sfix]):
     n = len(data1)
-    mean2, count = _mean(data1)
+    mean1, count = _mean(data1)
     mean2, _ = _mean(data2)
     data1 = Array.create_from(if_else(i!=MAGIC_NUMBER, i, mean1) for i in data1)
     data2 = Array.create_from(if_else(i!=MAGIC_NUMBER, i, mean2) for i in data2)
