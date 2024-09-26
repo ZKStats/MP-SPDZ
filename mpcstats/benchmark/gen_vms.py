@@ -16,6 +16,10 @@ config_mine = repo_root / 'CONFIG.mine'
 for _, program, _, _ in all_protocols:
     # special handling for spdz2k
     config_mine_content = 'MOD = -DRING_SIZE=128' if program == 'spdz2k-party.x' else ''
+    program_file = repo_root / program
+    if program_file.exists():
+        continue
+
     print(f'Compiling {program} w/ {config_mine_content}...')
 
     with open(config_mine, 'w') as file:
