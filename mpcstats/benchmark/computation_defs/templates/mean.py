@@ -10,6 +10,6 @@ def prepare_data():
 
 def computation():
     [vec] = get_aggr_party_data_vecs(NUM_PARTIES, [COL_INDEX]) 
-    res = mean_incl_magic_num(data)(vec)
+    res = mean_incl_magic_num(vec)
     write_result(res.reveal())
 

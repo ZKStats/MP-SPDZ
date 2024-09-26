@@ -37,7 +37,6 @@ def build_vm():
 def pd1(col):
     return gen_player_data_for_1_param_func(col, 2, 1)
 
-
 def test_correlation_success(build_vm):
     execute_stat_func_test(
         mpcstats_lib.correlation,
