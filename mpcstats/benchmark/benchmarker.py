@@ -40,6 +40,11 @@ def parse_args():
         help='MPC protocol',
     )
     parser.add_argument(
+        'num_parties',
+        type=int,
+        help='Number of participating parties',
+    )
+    parser.add_argument(
         '--name',
         type=str,
         default=f'computation',
@@ -67,12 +72,6 @@ def parse_args():
         '--file',
         type=str,
         help='Computation definition file. If not specified, the definition will be read from stdin',
-    )
-    parser.add_argument(
-        '--num-parties',
-        type=int,
-        default=3,
-        help='Number of participating parties',
     )
     parser.add_argument(
         '--comp-args',
@@ -120,7 +119,7 @@ def gen_executor_cmd(args: list[str]) -> list[str]:
     if args.verbose:
         opts.append('--verbose')
  
-    return [executor_script, args.protocol] + opts
+    return [executor_script, args.protocol, str(args.num_parties)] + opts
 
 def monitor_mem_usage(proc: subprocess.Popen, mem_field: str, mem_get_sleep: float) -> int:
     max_mem_usage = 0

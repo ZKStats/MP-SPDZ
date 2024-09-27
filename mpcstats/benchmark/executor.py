@@ -27,6 +27,11 @@ def parse_args():
         help='MPC protocol',
     )
     parser.add_argument(
+        'num_parties',
+        type=int, 
+        help='Number of participating parties',
+    )
+    parser.add_argument(
         '--name',
         type=str,
         default=f'computation',
@@ -51,11 +56,15 @@ args = parse_args()
 script = read_script(args.file)
 exec(script)
 
+# make sure the number of parties in computation and arguments are consistent
+if NUM_PARTIES != args.num_parties:
+    raise f'NUM_PARTIES is {NUM_PARTIES}, args.num_parties is {args.num_parties}'
+
 prepare_data() # from computation definition script
 
 # execute the injected computation
 mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
-cmd = f'PLAYERS={NUM_PARTIES} {mpc_script} {args.name}'
+cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'
 output = exec_subprocess(cmd)
 out_obj = parse_execution_output(output)
 out_obj[PROTOCOL] = args.protocol

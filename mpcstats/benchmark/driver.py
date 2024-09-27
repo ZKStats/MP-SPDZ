@@ -61,6 +61,11 @@ def parse_args() -> Any:
         help=f'Scenario id: {scenario_desc()}',
     )
     parser.add_argument(
+        'num_parties',
+        type=int,
+        help='Number of particicating parties',
+    )
+    parser.add_argument(
         'dataset', 
         type=int, 
         choices=[100, 1000, 10000, 100000], 
@@ -116,11 +121,12 @@ def gen_line(result: object) -> str:
 def write_benchmark_result(
     computation_def: Path,
     protocol: str,
+    num_parties: int,
     comp_args: str,
     category: str,
     args: Any) -> None:
 
-    cmd = [benchmark_dir / 'benchmarker.py', protocol, '--file', computation_def, '--comp-args', comp_args]
+    cmd = [benchmark_dir / 'benchmarker.py', protocol, str(num_parties), '--file', computation_def, '--comp-args', comp_args]
     if args.verbose:
         cmd.append('--verbose')
 
@@ -158,7 +164,7 @@ activate(datasets_dir, f'10x{args.dataset}', 'csv')
 subprocess.run([benchmark_dir / 'gen_vms.py'], check=True)
 
 # generate computation defs from the tempaltes
-subprocess.run([benchmark_dir / 'gen_comp_defs.py'], check=True)
+subprocess.run([benchmark_dir / 'gen_comp_defs.py', str(args.num_parties)], check=True)
 
 # print header
 print(gen_header())
@@ -179,6 +185,7 @@ for computation_def in computation_defs:
             write_benchmark_result(
                 computation_def,
                 protocol,
+                args.num_parties,
                 comp_args,
                 category,
                 args)
