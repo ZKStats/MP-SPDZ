@@ -34,7 +34,6 @@ headers = [
     (STATISTICAL_SECURITY_PARAMETER, EXEC),
     (DATA_SENT_BY_PARTY_0, EXEC),
     (GLOBAL_DATA_SENT_MB, EXEC),
-    (RESULT, EXEC),
 ]
 
 scenarios = [
@@ -185,6 +184,10 @@ for protocol, _, comp_args, category in all_protocols:
     if protocol.endswith('.sh'):
         print(f'Drop .sh from {protocol}')
         exit(0)
+
+# add result to output line unless remote and party number is greater than 0
+if args.remote is None or (args.remote is not None and args.remote > 0):
+    headers.append((RESULT, EXEC))
 
 # print benchmark result rows
 for computation_def in computation_defs:
