@@ -13,7 +13,7 @@ import argparse
 import subprocess
 import os
 import time
-from typing import List, Literal
+from typing import List, Literal, Optional
 import json
 from common_lib import read_script 
 from constants import MAX_MEM_USAGE_KB, EXEC_TIME_SEC
@@ -79,6 +79,11 @@ def parse_args():
         help='Arguments for `compile.py`',
     )
     parser.add_argument(
+        '--remote',
+        type=int,
+        help='Party number in remote execution',
+    )
+    parser.add_argument(
         '--verbose',
         action='store_true',
         help='Show output from internally called scripts',
@@ -93,7 +98,7 @@ def exec_ps(pid: int, field: MemoryFieldsType) -> int:
         )
         return int(res.stdout.decode().strip())
 
-def gen_compile_cmd(args: list[str]) -> list[str]:
+def gen_compile_cmd(args: argparse.Namespace) -> list[str]:
     compile_script = benchmark_dir / 'compile.py'
     opts = []
     if args.comp_args is not None:
@@ -109,13 +114,15 @@ def gen_compile_cmd(args: list[str]) -> list[str]:
 
     return [compile_script] + opts
 
-def gen_executor_cmd(args: list[str]) -> list[str]:
+def gen_executor_cmd(args: argparse.Namespace) -> list[str]:
     executor_script = benchmark_dir / 'executor.py'
     opts = []
     if args.name:
         opts.extend(['--name', args.name])
     if args.file:
         opts.extend(['--file', args.file])
+    if args.remote:
+        opts.extend(['--remote', args.remote])
     if args.verbose:
         opts.append('--verbose')
  

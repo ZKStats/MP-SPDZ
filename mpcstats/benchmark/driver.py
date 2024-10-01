@@ -56,7 +56,7 @@ def scenario_desc() -> str:
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Benchmarking driver')
     parser.add_argument(
-        'id',
+        'scenario_id',
         type=int,
         help=f'Scenario id: {scenario_desc()}',
     )
@@ -70,6 +70,11 @@ def parse_args() -> Any:
         type=int, 
         choices=[100, 1000, 10000, 100000], 
         help='Dataset to use. 100, 1000, 10000 or 100000',
+    )
+    parser.add_argument(
+        '--remote',
+        type=int,
+        help='Party number in remote execution',
     )
     parser.add_argument(
         '--verbose',
@@ -129,6 +134,8 @@ def write_benchmark_result(
     cmd = [benchmark_dir / 'benchmarker.py', protocol, str(num_parties), '--file', computation_def, '--comp-args', comp_args]
     if args.verbose:
         cmd.append('--verbose')
+    if args.remote is not None:
+        cmd.extend(['--remote', args.remote])
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     try:
@@ -146,12 +153,12 @@ def write_benchmark_result(
 args = parse_args()
 
 # set up scenario
-if args.id == 0:
+if args.scenario_id == 0:
     activate_all(templates_dir)
 
-elif args.id > 0:
+elif args.scenario_id > 0:
     deactivate_all(templates_dir)
-    names = scenarios[args.id]
+    names = scenarios[args.scenario_id]
     for name in names:
         activate(templates_dir, name, 'py')
         print(f'Activated {name} scenario')
@@ -160,8 +167,9 @@ elif args.id > 0:
 deactivate_all(datasets_dir)
 activate(datasets_dir, f'10x{args.dataset}', 'csv')
 
-# generate required VMs
-subprocess.run([benchmark_dir / 'gen_vms.py'], check=True)
+# generate required VMs if locally executing MPC
+if args.remote is None:
+    subprocess.run([benchmark_dir / 'gen_vms.py'], check=True)
 
 # generate computation defs from the tempaltes
 subprocess.run([benchmark_dir / 'gen_comp_defs.py', str(args.num_parties)], check=True)

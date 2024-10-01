@@ -44,6 +44,11 @@ def parse_args():
         help='Computation definition file. If not specified, the definition will be read from stdin',
     )
     parser.add_argument(
+        '--remote',
+        type=int,
+        help='Party number in remote execution',
+    )
+    parser.add_argument(
         '--verbose',
         action='store_true',
         help='Show output from MPC script',
@@ -63,8 +68,13 @@ if NUM_PARTIES != args.num_parties:
 prepare_data() # from computation definition script
 
 # execute the injected computation
-mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
-cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'
+if args.remote:
+    vm = str(repo_root / f'{args.protocol}-party.x')
+    cmd = f'{vm} -N {args.num_parties} -ip HOSTS -p {args.remote} {args.name}'
+else:
+    mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
+    cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'
+
 output = exec_subprocess(cmd)
 out_obj = parse_execution_output(output)
 out_obj[PROTOCOL] = args.protocol
