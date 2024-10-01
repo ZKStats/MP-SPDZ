@@ -1,0 +1,119 @@
+# coding: latin-1
+"""
+  Demo to show for DevCon, focusing on client interface, allowing clients to disconnect after giving inputs and reconnect to get output
+  while also allowing servers to store values
+"""
+from typing import Type
+from Compiler.types import sint, regint, Array, MemValue
+from Compiler.library import print_ln, do_while, for_range, accept_client_connection, listen_for_clients, if_, if_e, else_, crash
+from Compiler.instructions import closeclientconnection
+from Compiler.util import if_else
+from Compiler.circuit import sha3_256
+
+sfix.round_nearest = True
+PORTNUM = 14000
+MAX_NUM_CLIENTS = 10
+
+def accept_client():
+    client_socket_id = accept_client_connection(PORTNUM)
+    computationIndex = regint.read_from_socket(client_socket_id)
+    return client_socket_id, computationIndex
+
+def computation(index, client_values):
+    print_ln('comp index: %s', index)
+    result = sint.Array(1)
+    @if_e(index == 0)
+    def _():
+        result[0]=sum(client_values)
+    @else_
+    def _():
+        result[0]=sum(client_values).int_div(sint(2), 10)
+    return result
+    
+def calculate_data_commitment(num_bytes_followers: int, followers:sint, delta: sbitvec, encoding: list[sbitvec], nonce: sbitvec):
+    
+    ASCII_BASE = 48
+    followers_bits_list = []
+    number = followers
+    for i in range(num_bytes_followers):
+        divisor = sint(10**(num_bytes_followers-1-i))
+        curr_digit = number.int_div(divisor, 4*num_bytes_followers)
+        followers_bits_list += [sbit(ele) for ele in sbitvec(curr_digit+ASCII_BASE, 8).v]
+        number = number.int_mod(divisor, 4*num_bytes_followers)
+    
+    active_encoding:list[sbitvec] = []
+    for i in range(len(encoding)):
+        filtered_delta = []
+        for j in range(len(delta)):
+            filtered_delta.append(followers_bits_list[i].if_else(delta[j], sbit(0)))
+        filtered_delta = sbitvec.from_vec(filtered_delta)
+        active_encoding.append(encoding[i].bit_xor(filtered_delta))
+
+    concat = nonce.bit_decompose() + sbitvec(sint(num_bytes_followers), 8).bit_decompose()
+    
+    for i in range(len(encoding)):
+        if i%8 ==0:
+            concat = concat + sbitvec(sint(1), 8).bit_decompose()
+        concat = concat+active_encoding[i].bit_decompose()
+    return sha3_256(sbitvec.compose(concat))
+
+def main():
+
+    followers_0 = sint(3)
+    delta_0 = sbitvec.from_hex('2501fa5c2b50281d97cc4e63bb1beaef')
+    zero_encodings_0 = [sbitvec.from_hex(e) for e in ['b51d9f6c1d7133a3c2d307b431c7f3ea', '2842eaaf492880247548f2cb189c2f5b', 'f1844ae7b20ad935605c87878b0ffb96', 'd19b84012adf53dedc896ebb36f7decd', 'e9629218d15b7d0887ffa78c4c70d237', 'd7ce38f06c1b134f30ee3dcd5c947d54', '7e666304dbc6c6a48d270c6d4c71f789', '62a1e68e06fd1d02adeb3646cfb47601']]
+    nonce_0 = sbitvec.from_hex('2a0ffcbec6f9338b582694ed46504445e59f3159ad6b7cb035325450ccb31213')
+    
+    commitment_0 = calculate_data_commitment(1, followers_0, delta_0, zero_encodings_0, nonce_0)
+    print_ln('commitment_0 hex: ')
+    commitment_0.reveal_print_hex()
+    commitment_0 = commitment_0.reverse_bytes()
+
+    sint_commitment_0_first = sint.bit_compose(commitment_0[0:64])
+    print_ln('first 64-bit chunk: %s', sint_commitment_0_first.reveal())
+    sint_commitment_0_second = sint.bit_compose(commitment_0[64:128])
+    print_ln('second 64-bit chunk: %s', sint_commitment_0_second.reveal())
+    sint_commitment_0_third = sint.bit_compose(commitment_0[128:192])
+    print_ln('third 64-bit chunk: %s', sint_commitment_0_third.reveal())
+    sint_commitment_0_fourth = sint.bit_compose(commitment_0[192:256])
+    print_ln('fourth 64-bit chunk: %s', sint_commitment_0_fourth.reveal())
+
+    # Start listening for client socket connections
+    listen_for_clients(PORTNUM)
+    print_ln('Listening for client connections on base port %s', PORTNUM)
+
+    client_socket_id, computationIndex = accept_client()
+    print_ln('client_socket_id: %s', client_socket_id)
+
+    # put as array to make it object
+    # First element is the number of clients
+    client_values = sint.Array(1 + MAX_NUM_CLIENTS)
+
+    tmp = client_values.read_from_file(0)
+    print_ln('tmp: %s', tmp.reveal())
+    print_ln('client_values: %s', [client_values[i].reveal() for i in range(MAX_NUM_CLIENTS + 1)])
+    
+    @if_(client_socket_id >= MAX_NUM_CLIENTS)
+    def _():
+        print_ln('client id too high')
+        crash()
+
+    result = computation(computationIndex, client_values)
+    #result = sum(client_values)
+    
+    
+    print_ln('query computation index: %s is %s', computationIndex, result[0].reveal())
+    
+    #sint.reveal_to_clients([client_socket_id], result)
+    return_array = sint.Array(5)
+    return_array[0] = result[0]
+    return_array[1]= sint_commitment_0_first
+    return_array[2]= sint_commitment_0_second
+    return_array[3]= sint_commitment_0_third
+    return_array[4]= sint_commitment_0_fourth
+    
+    return_array.reveal_to_clients([client_socket_id])
+
+    print_ln('Now closing this connection')
+    closeclientconnection(client_socket_id)
+main()
