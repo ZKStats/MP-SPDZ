@@ -71,15 +71,11 @@ prepare_data() # from computation definition script
 if args.remote is not None:
     vm = str(repo_root / f'{args.protocol}-party.x')
     cmd = f'{vm} -N {args.num_parties} -ip HOSTS -p {args.remote} {args.name}'
-    env = os.environ.copy()
-    env["LD_LIBRARY_PATH"] = str(repo_root)
-    env["DYLD_LIBRARY_PATH"] = str(repo_root)
 else:
     mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
     cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'
-    env = None
 
-output = exec_subprocess(cmd, env)
+output = exec_subprocess(cmd)
 out_obj = parse_execution_output(output)
 out_obj[PROTOCOL] = args.protocol
 out_obj[PROG_NAME] = args.name
