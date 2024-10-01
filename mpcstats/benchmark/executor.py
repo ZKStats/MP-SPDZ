@@ -68,7 +68,7 @@ if NUM_PARTIES != args.num_parties:
 prepare_data() # from computation definition script
 
 # execute the injected computation
-if args.remote:
+if args.remote is not None:
     vm = str(repo_root / f'{args.protocol}-party.x')
     cmd = f'{vm} -N {args.num_parties} -ip HOSTS -p {args.remote} {args.name}'
 else:
