@@ -163,9 +163,12 @@ def compile_computation(
     compiler.compile_func()
     sys.argv = bak
 
-def exec_subprocess(cmd: str) -> str:
+def exec_subprocess(cmd: str, env: Any = None) -> str:
     try:
-        res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
+        if env is None:
+            env = os.environ.copy()
+
+        res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True, env=env)
         return res.stdout
 
     except subprocess.CalledProcessError as e:
