@@ -11,7 +11,7 @@ sys.path.append(f'{repo_root}/mpcstats')
 
 from common_lib import execute_silently, exec_subprocess, DIMENTION_FILE, read_script
 from output_parser import parse_execution_output
-from constants import PROG_NAME, PROTOCOL
+from constants import PROG_NAME, PROTOCOL, RESULT
 from Compiler.types import sfix, Matrix
 
 import argparse
@@ -79,6 +79,9 @@ output = exec_subprocess(cmd)
 out_obj = parse_execution_output(output)
 out_obj[PROTOCOL] = args.protocol
 out_obj[PROG_NAME] = args.name
+
+if args.remote is not None and args.remote > 0:
+    out_obj[RESULT] = 'N/A'
 
 if args.verbose:
     print(output)
