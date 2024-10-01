@@ -73,8 +73,7 @@ if args.remote is not None:
     cmd = f'{vm} -N {args.num_parties} -ip HOSTS -p {args.remote} {args.name}'
     env = os.environ.copy()
     env["LD_LIBRARY_PATH"] = str(repo_root)
-
-    env = f'LD_LIBRARY_PATH={str(repo_root)}'
+    env["DYLD_LIBRARY_PATH"] = str(repo_root)
 else:
     mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
     cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'
