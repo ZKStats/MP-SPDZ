@@ -165,9 +165,6 @@ def compile_computation(
 
 def exec_subprocess(cmd: str) -> str:
     try:
-        if env is None:
-            env = os.environ.copy()
-
         res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
         return res.stdout
 
