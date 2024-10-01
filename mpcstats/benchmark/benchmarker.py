@@ -121,7 +121,7 @@ def gen_executor_cmd(args: argparse.Namespace) -> list[str]:
         opts.extend(['--name', args.name])
     if args.file:
         opts.extend(['--file', args.file])
-    if args.remote:
+    if args.remote is not None:
         opts.extend(['--remote', str(args.remote)])
     if args.verbose:
         opts.append('--verbose')
