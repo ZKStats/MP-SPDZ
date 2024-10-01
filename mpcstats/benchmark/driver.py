@@ -135,7 +135,7 @@ def write_benchmark_result(
     if args.verbose:
         cmd.append('--verbose')
     if args.remote is not None:
-        cmd.extend(['--remote', args.remote])
+        cmd.extend(['--remote', str(args.remote)])
 
     result = subprocess.run(cmd, capture_output=True, text=True)
     try:
