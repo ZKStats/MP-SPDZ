@@ -166,7 +166,7 @@ def compile_computation(
 def exec_subprocess(cmd: str) -> str:
     try:
         res = subprocess.run(cmd, shell=True, capture_output=True, check=True, text=True)
-        return res.stdout
+        return f'{res.stdout}\n{res.stderr}'
 
     except subprocess.CalledProcessError as e:
         print(e)
