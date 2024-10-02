@@ -1,7 +1,7 @@
 dishonest_majority_malicious = [t + ('DM-M-SS',) for t in [
 # ('mascot', 'mascot-party.x', ''), # ok
 # ('mama', 'mama-party.x', ''), # ok
-('spdz2k', 'spdz2k-party.x', '--ring 128'),
+# ('spdz2k', 'spdz2k-party.x', '--ring 128'),
 # ('lowgear', 'lowgear-party.x', ''), # ok
 # ('highgear', 'highgear-party.x', ''), # ok
 ]]
@@ -28,8 +28,8 @@ honest_majority_malicious = [t + ('HM-M',) for t in [
 # ('ps-rep-field', 'ps-rep-field-party.x', ''), # ok
 # ('sy-rep-field', 'sy-rep-field-party.x', ''), # ok
 # ('mal-rep-field', 'malicious-rep-field-party.x', ''), # ok
-# ('mal-shamir', 'malicious-shamir-party.x', ''), # ok
-# ('sy-shamir', 'sy-shamir-party.x', ''), # ok
+('mal-shamir', 'malicious-shamir-party.x', ''), # ok
+('sy-shamir', 'sy-shamir-party.x', ''), # ok
 ]]
 
 honest_majority_non_malicious = [t + ('HM-NM',) for t in [
