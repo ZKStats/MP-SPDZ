@@ -63,7 +63,7 @@ all_protocols += honest_majority_non_malicious
 #all_protocols += binary_circuit_only
 
 def get_vm(protocol: str) -> str:
-    for proto, vm, _ in all_protocols:
+    for proto, vm, _, _ in all_protocols:
         if proto == protocol:
             return vm
     print(f'--- VM NOT FOUND FOR {protocol}')
