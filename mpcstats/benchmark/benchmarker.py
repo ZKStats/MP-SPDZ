@@ -84,9 +84,14 @@ def parse_args():
         help='Party number in remote execution',
     )
     parser.add_argument(
-        '--verbose',
+        '--verbose-compiler',
         action='store_true',
         help='Show output from internally called scripts',
+    )
+    parser.add_argument(
+        '--verbose-vm',
+        action='store_true',
+        help='Show output from vm',
     )
     return parser.parse_args()
 
@@ -109,7 +114,7 @@ def gen_compile_cmd(args: argparse.Namespace) -> list[str]:
         opts.extend(['--file', args.file])
     if args.edabit:
         opts.append('--edabit')
-    if args.verbose:
+    if args.verbose_compiler:
         opts.append('--verbose')
 
     return [compile_script] + opts
@@ -123,7 +128,7 @@ def gen_executor_cmd(args: argparse.Namespace) -> list[str]:
         opts.extend(['--file', args.file])
     if args.remote is not None:
         opts.extend(['--remote', str(args.remote)])
-    if args.verbose:
+    if args.verbose_vm:
         opts.append('--verbose')
  
     return [executor_script, args.protocol, str(args.num_parties)] + opts

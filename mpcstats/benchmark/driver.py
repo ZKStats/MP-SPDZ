@@ -77,9 +77,14 @@ def parse_args() -> Any:
         help='Party number in remote execution',
     )
     parser.add_argument(
-        '--verbose',
+        '--verbose-compiler',
         action='store_true',
         help='Show output from Comipler module',
+    )
+    parser.add_argument(
+        '--verbose-vm',
+        action='store_true',
+        help='Show output from vm module',
     )
     return parser.parse_args()
 
@@ -132,8 +137,10 @@ def write_benchmark_result(
     args: Any) -> None:
 
     cmd = [benchmark_dir / 'benchmarker.py', protocol, str(num_parties), '--file', computation_def, '--comp-args', comp_args]
-    if args.verbose:
-        cmd.append('--verbose')
+    if args.verbose_compiler:
+        cmd.append('--verbose-compiler')
+    if args.verbose_vm:
+        cmd.append('--verbose-vm')
     if args.remote is not None:
         cmd.extend(['--remote', str(args.remote)])
 
@@ -141,7 +148,9 @@ def write_benchmark_result(
     try:
         result_obj = json.loads(result.stdout)
     except:
+        print('-----------')
         print(str(result).replace('\\n', '\n'))
+        print('-----------')
         raise
     result_obj.append({
         'computation': computation_def.stem,
