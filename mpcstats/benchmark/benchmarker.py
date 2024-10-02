@@ -194,9 +194,9 @@ args = parse_args()
 computation_script = read_script(open(args.file) if args.file else None)
 
 # execute compile script
-compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_field, 0.1, args.verbose)
+compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_field, 0.1, args.verbose_compiler)
 
 # execute executor script
-executor_result = exec_cmd(gen_executor_cmd(args), computation_script, args.mem_field, args.mem_get_sleep, args.verbose)
+executor_result = exec_cmd(gen_executor_cmd(args), computation_script, args.mem_field, args.mem_get_sleep, args.verbose_vm)
 
 print(json.dumps([compile_result, executor_result]), end='')
