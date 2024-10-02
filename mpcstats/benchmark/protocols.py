@@ -35,7 +35,7 @@ honest_majority_malicious = [t + ('HM-M',) for t in [
 honest_majority_non_malicious = [t + ('HM-NM',) for t in [
 # ('rep-field', 'replicated-field-party.x', ''), # ok
 ('atlas', 'atlas-party.x', ''), # ok
-# ('shamir', 'shamir-party.x', ''), # ok
+('shamir', 'shamir-party.x', ''), # ok
 ]]
 
 # ################################
