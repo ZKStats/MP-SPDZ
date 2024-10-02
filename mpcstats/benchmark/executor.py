@@ -89,7 +89,7 @@ out_obj[PROTOCOL] = args.protocol
 out_obj[PROG_NAME] = args.name
 
 if args.remote is not None and args.remote > 0:
-    out_obj[RESULT] = 'N/A'
+    out_obj[RESULT] = 'NA'
 
 if args.verbose:
     print(output)
