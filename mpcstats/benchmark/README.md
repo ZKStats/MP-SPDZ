@@ -39,3 +39,10 @@ To get the list of secnario IDs, run:
 ./driver.sh -h
 ```
 
+### Setting up a remote machine
+Assuming a Ubuntu 24.04, x86, 64-bit instance
+```
+sudo apt update
+sudo apt-get install -y automake build-essential clang cmake git libboost-all-dev libgmp-dev libntl-dev libsodium-dev libssl-dev libtool python3
+```
+
