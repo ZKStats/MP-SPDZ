@@ -66,5 +66,6 @@ def get_vm(protocol: str) -> str:
     for proto, vm, _ in all_protocols:
         if proto == protocol:
             return vm
+    print(f'--- VM NOT FOUND FOR {protocol}')
     return None
 
