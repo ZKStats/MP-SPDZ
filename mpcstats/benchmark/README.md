@@ -41,8 +41,53 @@ To get the list of secnario IDs, run:
 
 ### Setting up a remote machine
 Assuming a Ubuntu 24.04, x86, 64-bit instance
+
+- Install necessary libraries
 ```
 sudo apt update
 sudo apt-get install -y automake build-essential clang cmake git libboost-all-dev libgmp-dev libntl-dev libsodium-dev libssl-dev libtool python3
 ```
+
+- Install MP-SPDZ
+```
+git clone https://github.com/exfinen/MP-SPDZ.git
+cd MP-SPDZ
+git checkout benchmarker
+```
+
+- Generate ssl keys and distribute to all parties
+
+```
+cd MP-SPDZ/mpcstats/benchmark
+../../Scripts/setup-ssl.sh 3
+```
+
+Then copy `PlayerData/P*.pem` and `PlayerData/P*.key` to the same location in other instances
+
+- Make parties accssible to other parties without password
+
+1. On each party instance, create `~/.ssh/config` of the following contents:
+
+```
+Host p0
+  HostName 3.107.77.187
+  User ubuntu
+  IdentityFile ~/party0.pem
+  IdentitiesOnly yes
+  Port 22
+Host p1
+  HostName 3.26.224.96
+  User ubuntu
+  IdentityFile ~/party1.pem
+  IdentitiesOnly yes
+  Port 22
+Host p2
+  HostName 3.107.161.167
+  User ubuntu
+  IdentityFile ~/party2.pem
+  IdentitiesOnly yes
+  Port 22
+```
+
+2. Copy `.pem` files to the home directory of each party instance
 

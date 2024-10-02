@@ -70,7 +70,13 @@ prepare_data() # from computation definition script
 # execute the injected computation
 if args.remote is not None:
     vm = str(repo_root / f'{args.protocol}-party.x')
-    cmd = f'{vm} -v -N {args.num_parties} -ip HOSTS -p {args.remote} {args.name}'
+
+    if 'replicated-field' in vm or 'rep-field' in vm:
+        N = ''
+    else:
+        N = f'-N {args.num_parties}'
+
+    cmd = f'{vm} -v {N} -ip HOSTS -p {args.remote} {args.name}'
 else:
     mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
     cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'
