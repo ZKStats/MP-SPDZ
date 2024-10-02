@@ -136,6 +136,7 @@ def write_benchmark_result(
     category: str,
     args: Any) -> None:
 
+    print('---->')
     cmd = [benchmark_dir / 'benchmarker.py', protocol, str(num_parties), '--file', computation_def, '--comp-args', comp_args]
     if args.verbose_compiler:
         cmd.append('--verbose-compiler')
@@ -198,12 +199,11 @@ for protocol, _, comp_args, category in all_protocols:
 # print benchmark result rows
 for computation_def in computation_defs:
     for protocol, _, comp_args, category in all_protocols:
-        if protocol != '':
-            write_benchmark_result(
-                computation_def,
-                protocol,
-                args.num_parties,
-                comp_args,
-                category,
-                args)
+        write_benchmark_result(
+            computation_def,
+            protocol,
+            args.num_parties,
+            comp_args,
+            category,
+            args)
 

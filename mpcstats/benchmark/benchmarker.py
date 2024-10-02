@@ -193,9 +193,6 @@ args = parse_args()
 # read computaiton script from file or stdin
 computation_script = read_script(open(args.file) if args.file else None)
 
-# should run for each computation script
-#subprocess.run([scripts_dir / 'setup-ssl.sh', num_parties])
-
 # execute compile script
 compile_result = exec_cmd(gen_compile_cmd(args), computation_script, args.mem_field, 0.1, args.verbose)
 
