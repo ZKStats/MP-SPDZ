@@ -73,7 +73,7 @@ if args.remote is not None:
     vm = get_vm(args.protocol)
     vm_path = str(repo_root / vm)
 
-    if 'replicated-field' in vm or 'rep-field' in vm:
+    if 'rep' in vm in vm:
         N = ''
     else:
         N = f'-N {args.num_parties}'
