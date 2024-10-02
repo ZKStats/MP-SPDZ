@@ -13,6 +13,7 @@ from common_lib import execute_silently, exec_subprocess, DIMENTION_FILE, read_s
 from output_parser import parse_execution_output
 from constants import PROG_NAME, PROTOCOL, RESULT
 from Compiler.types import sfix, Matrix
+from protocols import get_vm
 
 import argparse
 import re
@@ -69,14 +70,15 @@ prepare_data() # from computation definition script
 
 # execute the injected computation
 if args.remote is not None:
-    vm = str(repo_root / f'{args.protocol}-party.x')
+    vm = get_vm(args.protocol)
+    vm_path = str(repo_root / vm)
 
     if 'replicated-field' in vm or 'rep-field' in vm:
         N = ''
     else:
         N = f'-N {args.num_parties}'
 
-    cmd = f'{vm} -v {N} -ip HOSTS -p {args.remote} {args.name}'
+    cmd = f'{vm_path} -v {N} -ip HOSTS -p {args.remote} {args.name}'
 else:
     mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
     cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'

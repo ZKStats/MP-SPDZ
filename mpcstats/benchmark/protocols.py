@@ -19,10 +19,6 @@ dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
 # ('soho', 'soho-party.x', ''), # ok
 ]]
 
-dishonest_majority_yao = [t + ('DM-YAO',) for t in [
-#('yao', 'yao-party.x', ''), # binary circuit only
-]]
-
 honest_majority_malicious = [t + ('HM-M',) for t in [
 # ('ring', 'replicated-ring-party.x', '--ring 128'), # ok
 # ('ps-rep-ring', 'ps-rep-ring-party.x', '--ring 128'), # ok
@@ -42,20 +38,33 @@ honest_majority_non_malicious = [t + ('HM-NM',) for t in [
 # ('shamir', 'shamir-party.x', ''), # ok
 ]]
 
-bmr = [t + ('BMR',) for t in [
-#('real-bmr', 'real-bmr-party.x', ''), # binary circuit only
-#('semi-bmr', 'semi-bmr-party.x', ''), # binary circuit only
-#('shamir-bmr', 'shamir-bmr-party.x', ''), # binary circuit only
-#('mal-shamir-bmr', 'mal-shamir-bmr-party.x', ''), # binary circuit only
-#('rep-bmr', 'rep-bmr-party.x', ''), # binary circuit only
-#('mal-rep-bmr', 'mal-rep-bmr-party.x', ''), # binary circuit only
-]]
+# ################################
+# # binary circuit only protocols
+# dishonest_majority_yao = [t + ('DM-YAO',) for t in [
+# #('yao', 'yao-party.x', ''), # binary circuit only
+# ]]
+# 
+# bmr = [t + ('BMR',) for t in [
+# #('real-bmr', 'real-bmr-party.x', ''), # binary circuit only
+# #('semi-bmr', 'semi-bmr-party.x', ''), # binary circuit only
+# #('shamir-bmr', 'shamir-bmr-party.x', ''), # binary circuit only
+# #('mal-shamir-bmr', 'mal-shamir-bmr-party.x', ''), # binary circuit only
+# #('rep-bmr', 'rep-bmr-party.x', ''), # binary circuit only
+# #('mal-rep-bmr', 'mal-rep-bmr-party.x', ''), # binary circuit only
+# ]]
+# 
+# binary_circuit_only = dishonest_majority_yao + bmr
 
 all_protocols = dishonest_majority_malicious
 all_protocols += dishonest_majority_covert
 all_protocols += dishonest_majority_semi_honest
-all_protocols += dishonest_majority_yao
 all_protocols += honest_majority_malicious
 all_protocols += honest_majority_non_malicious
-all_protocols += bmr
+#all_protocols += binary_circuit_only
+
+def get_vm(protocol: str) -> str:
+    for proto, vm, _ in all_protocols:
+        if proto == protocol:
+            return vm
+    return None
 
