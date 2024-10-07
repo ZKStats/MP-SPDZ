@@ -45,6 +45,12 @@ def parse_args():
         help='Computation definition file. If not specified, the definition will be read from stdin',
     )
     parser.add_argument(
+        '--base-port',
+        type=int,
+        default=8000,
+        help='Base party port number',
+    )
+    parser.add_argument(
         '--remote',
         type=int,
         help='Party number in remote execution',
@@ -78,7 +84,7 @@ if args.remote is not None:
     else:
         N = f'-N {args.num_parties}'
 
-    cmd = f'{vm_path} -v {N} -ip HOSTS -pn 8000 -p {args.remote} {args.name}'
+    cmd = f'{vm_path} -v {N} -ip HOSTS -pn {args.base_port} -p {args.remote} {args.name}'
 else:
     mpc_script = str(repo_root / 'Scripts' / f'{args.protocol}.sh')
     cmd = f'PLAYERS={args.num_parties} {mpc_script} {args.name}'
