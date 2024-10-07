@@ -1,22 +1,22 @@
 dishonest_majority_malicious = [t + ('DM-M-SS',) for t in [
 # ('mascot', 'mascot-party.x', ''), # ok
 # ('mama', 'mama-party.x', ''), # ok
-('spdz2k', 'spdz2k-party.x', '--ring 128'),
-('lowgear', 'lowgear-party.x', ''), # ok
-('highgear', 'highgear-party.x', ''), # ok
+# ('spdz2k', 'spdz2k-party.x', '--ring 128'), slow
+# ('lowgear', 'lowgear-party.x', ''), # ok slow
+# ('highgear', 'highgear-party.x', ''), # ok slow
 ]]
 
 dishonest_majority_covert = [t + ('DM-C-SS',) for t in [
 # ('cowgear', 'cowgear-party.x', ''), # ok
-('chaigear', 'chaigear-party.x', ''), # ok
+#('chaigear', 'chaigear-party.x', ''), # ok slow
 ]]
 
 dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
-# ('semi', 'semi-party.x', ''), # ok
+('semi', 'semi-party.x', ''), # ok
 # ('semi2k', 'semi2k-party.x', '--ring 128'), # ok
-# ('hemi', 'hemi-party.x', ''), # ok
-# ('temi', 'temi-party.x', ''), # ok
-# ('soho', 'soho-party.x', ''), # ok
+('hemi', 'hemi-party.x', ''), # ok
+('temi', 'temi-party.x', ''), # ok
+('soho', 'soho-party.x', ''), # ok
 ]]
 
 honest_majority_malicious = [t + ('HM-M',) for t in [
