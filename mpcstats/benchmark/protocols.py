@@ -1,6 +1,6 @@
 dishonest_majority_malicious = [t + ('DM-M-SS',) for t in [
-('mascot', 'mascot-party.x', ''), # ok
-('mama', 'mama-party.x', ''), # ok
+# ('mascot', 'mascot-party.x', ''), # ok
+# ('mama', 'mama-party.x', ''), # ok
 # ('spdz2k', 'spdz2k-party.x', '--ring 128'), # ok? slow
 # ('lowgear', 'lowgear-party.x', ''), # ok? slow
 # ('highgear', 'highgear-party.x', ''), # ok? slow
