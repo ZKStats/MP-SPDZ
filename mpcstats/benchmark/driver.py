@@ -7,6 +7,7 @@ computation_def_dir = benchmark_dir / 'computation_defs'
 templates_dir = benchmark_dir / 'computation_defs' / 'templates'
 scripts_dir = repo_root / 'Scripts'
 datasets_dir = benchmark_dir / 'datasets'
+tlsn_dir = benchmark_dir / 'tlsn'
 
 import argparse
 import subprocess
@@ -172,6 +173,21 @@ elif args.scenario_id > 0:
     for name in names:
         activate(templates_dir, name, 'py')
         print(f'Activated {name} scenario')
+
+# if executing tlsn scenario, prepare tls notary 
+if args.scenario_id == 0 or 'tlsn' in scenarios[args.scenario_id]:
+    # if tlsn submodule doesn't exist, add the submodule
+    if not tlsn_dir.exists():
+        subprocess.run(['git', 'submodule', 'add', 'https://github.com/tlsnotary/tlsn'], cwd=benchmark_dir, check=True)
+        
+    # check out mpspdz-compat branch
+    subprocess.run(['git', 'checkout', 'mpspdz-compat'], cwd=tlsn_dir, check=True)
+    
+    # compile simple prover and verifier
+    subprocess.run(['cargo', 'run', '--release --example simple_prover'], cwd=tlsn_dir, check=True)
+    subprocess.run(['cargo', 'run', '--release --example simple_verifier'], cwd=tlsn_dir, check=True)
+
+
 
 # activate targetted dataset
 deactivate_all(datasets_dir)
