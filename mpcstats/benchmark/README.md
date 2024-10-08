@@ -27,7 +27,7 @@ Computation definitions whose names start with '_' are ignored.
 In `mpcstats/benchmark` directory, run:
 
 ```
-../../Scripts/setup-ssl.sh 4
+../../Scripts/setup-ssl.sh 3
 ```
 
 ## Running the benchmark
