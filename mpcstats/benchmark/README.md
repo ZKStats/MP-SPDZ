@@ -30,7 +30,7 @@ On party 0 host, in `mpcstats/benchmark` directory, run:
 ../../Scripts/setup-ssl.sh 3
 ```
 
-Then, copy `Player-Data/P{0,1,2}.pem` to the other party hosts as explained below.
+Then, copy `Player-Data/P{0,1,2}.{pem,key}` to the other party hosts as explained below.
 
 ```
 The certificates should be the same on every host. Also make sure that it's still valid. Certificates generated with `Scripts/setup-ssl.sh` expire after a month.
@@ -38,8 +38,11 @@ The certificates should be the same on every host. Also make sure that it's stil
 
 ```bash
 scp pse-eu:'MP-SPDZ/mpcstats/benchmark/Player-Data/*.pem' .
+scp pse-eu:'MP-SPDZ/mpcstats/benchmark/Player-Data/*.key' .
 scp *.pem pse-us:MP-SPDZ/mpcstats/benchmark/Player-Data
+scp *.key pse-us:MP-SPDZ/mpcstats/benchmark/Player-Data
 scp *.pem pse-asia:MP-SPDZ/mpcstats/benchmark/Player-Data
+scp *.key pse-asia:MP-SPDZ/mpcstats/benchmark/Player-Data
 ```
 
 ## Running the benchmark
