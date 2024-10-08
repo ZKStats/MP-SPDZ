@@ -187,8 +187,6 @@ if args.scenario_id == 0 or 'tlsn' in scenarios[args.scenario_id]:
     subprocess.run(['cargo', 'run', '--release --example simple_prover'], cwd=tlsn_dir, check=True)
     subprocess.run(['cargo', 'run', '--release --example simple_verifier'], cwd=tlsn_dir, check=True)
 
-
-
 # activate targetted dataset
 deactivate_all(datasets_dir)
 activate(datasets_dir, f'10x{args.dataset}', 'csv')
