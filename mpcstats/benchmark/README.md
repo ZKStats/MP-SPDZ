@@ -24,10 +24,22 @@ By executing `./gen_comp_defs.py`, computaion definition instances for all datas
 Computation definitions whose names start with '_' are ignored.
 
 ### Setting up ssl
-In `mpcstats/benchmark` directory, run:
+On party 0 host, in `mpcstats/benchmark` directory, run:
 
 ```
 ../../Scripts/setup-ssl.sh 3
+```
+
+Then, copy `Player-Data/P{0,1,2}.pem` to the other party hosts as explained below.
+
+```
+The certificates should be the same on every host. Also make sure that it's still valid. Certificates generated with `Scripts/setup-ssl.sh` expire after a month.
+```
+
+```bash
+scp pse-eu:'MP-SPDZ/mpcstats/benchmark/Player-Data/*.pem' .
+scp *.pem pse-us:MP-SPDZ/mpcstats/benchmark/Player-Data
+scp *.pem pse-asia:MP-SPDZ/mpcstats/benchmark/Player-Data
 ```
 
 ## Running the benchmark
