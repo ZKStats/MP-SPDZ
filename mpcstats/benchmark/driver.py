@@ -50,17 +50,19 @@ scenarios = [
 def scenario_desc() -> str:
     lines = []
     for id, names in enumerate(scenarios):
-        names_str = ','.join(names)
-        lines.append(f'{id}: {names_str}')
+        names_str = ' '.join(names)
+        lines.append(f'{id}:{names_str}')
 
-    return ' '.join(lines)
+    return ', '.join(lines)
+
+datasets = ['100', '1000', '10000', '100000', '1-digit', '2-digits', '3-digits', 'diff-digits']
 
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(description='Benchmarking driver')
     parser.add_argument(
         'scenario_id',
         type=int,
-        help=f'Scenario id: {scenario_desc()}',
+        help=scenario_desc(),
     )
     parser.add_argument(
         'num_parties',
@@ -69,9 +71,9 @@ def parse_args() -> Any:
     )
     parser.add_argument(
         'dataset', 
-        type=int, 
-        choices=[100, 1000, 10000, 100000], 
-        help='Dataset to use. 100, 1000, 10000 or 100000',
+        type=str, 
+        choices=datasets,
+        help=', '.join(datasets),
     )
     parser.add_argument(
         '--remote',
@@ -174,22 +176,12 @@ elif args.scenario_id > 0:
         activate(templates_dir, name, 'py')
         print(f'Activated {name} scenario')
 
-# if executing tlsn scenario, prepare tls notary 
-if args.scenario_id == 0 or 'tlsn' in scenarios[args.scenario_id]:
-    # if tlsn submodule doesn't exist, add the submodule
-    if not tlsn_dir.exists():
-        subprocess.run(['git', 'submodule', 'add', 'https://github.com/tlsnotary/tlsn'], cwd=benchmark_dir, check=True)
-        
-    # check out mpspdz-compat branch
-    subprocess.run(['git', 'checkout', 'mpspdz-compat'], cwd=tlsn_dir, check=True)
-    
-    # compile simple prover and verifier
-    subprocess.run(['cargo', 'run', '--release --example simple_prover'], cwd=tlsn_dir, check=True)
-    subprocess.run(['cargo', 'run', '--release --example simple_verifier'], cwd=tlsn_dir, check=True)
-
 # activate targetted dataset
 deactivate_all(datasets_dir)
-activate(datasets_dir, f'10x{args.dataset}', 'csv')
+if args.scenario_id == 5:  # if tlsn
+    activate(datasets_dir, args.dataset, 'csv')
+else:
+    activate(datasets_dir, f'10x{args.dataset}', 'csv')
 
 # generate required VMs if locally executing MPC
 if args.remote is None:
