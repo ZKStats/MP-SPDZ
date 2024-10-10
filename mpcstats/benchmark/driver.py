@@ -7,14 +7,16 @@ import sys
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import benchmark_dir, player_data_dir, datasets_dir
+from common_lib import benchmark_dir, datasets_dir
 
 from pathlib import Path
 computation_def_dir = benchmark_dir / 'computation_defs'
 templates_dir = benchmark_dir / 'computation_defs' / 'templates'
 scripts_dir = repo_root / 'Scripts'
 tlsn_dir = benchmark_dir / 'tlsn'
-circuits_dir = player_data_dir / 'Circuits'
+programs_dir = benchmark_dir / 'Programs'
+circuits_dir = programs_dir / 'Circuits'
+
 
 import argparse
 import subprocess
