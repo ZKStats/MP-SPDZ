@@ -2,16 +2,24 @@
 
 from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
-benchmark_dir = repo_root / 'mpcstats' / 'benchmark'
+
+import sys
+sys.path.append(str(repo_root))
+sys.path.append(f'{repo_root}/mpcstats')
+
+from common_lib import benchmark_dir, player_data_dir, datasets_dir
+
+from pathlib import Path
 computation_def_dir = benchmark_dir / 'computation_defs'
 templates_dir = benchmark_dir / 'computation_defs' / 'templates'
 scripts_dir = repo_root / 'Scripts'
-datasets_dir = benchmark_dir / 'datasets'
 tlsn_dir = benchmark_dir / 'tlsn'
+circuits_dir = player_data_dir / 'Circuits'
 
 import argparse
 import subprocess
 import json
+import shutil
 from typing import Any
 from protocols import all_protocols
 from constants import COMPUTATION, PROTOCOL, CATEGORY, ROUNDS, COMPILATION_TIME, EXECUTION_TIME, COMPILE_MAX_MEM_USAGE_KB, EXECUTOR_MAX_MEM_USAGE_KB, TOTAL_BYTECODE_SIZE, EXECUTOR_EXEC_TIME_SEC, COMPILE_EXEC_TIME_SEC, STATISTICAL_SECURITY_PARAMETER, DATA_SENT_BY_PARTY_0, GLOBAL_DATA_SENT_MB, RESULT
@@ -46,6 +54,7 @@ scenarios = [
     ['join'],
     ['tlsn'],
 ]
+TLSN_SCENARIO = scenarios.index(['tlsn'])
 
 def scenario_desc() -> str:
     lines = []
@@ -178,10 +187,15 @@ elif args.scenario_id > 0:
 
 # activate targetted dataset
 deactivate_all(datasets_dir)
-if args.scenario_id == 5:  # if tlsn
+if args.scenario_id == TLSN_SCENARIO:
     activate(datasets_dir, args.dataset, 'csv')
 else:
     activate(datasets_dir, f'10x{args.dataset}', 'csv')
+
+# build circuit descriptions and copy to benchmark dir if tlsn
+if args.scenario_id == TLSN_SCENARIO and not circuits_dir.exists():
+    subprocess.run(['make', 'Programs/Circuits'], check=True, cwd=repo_root)
+    shutil.copytree(repo_root / 'Programs' / 'Circuits', circuits_dir)
 
 # generate required VMs if locally executing MPC
 if args.remote is None:

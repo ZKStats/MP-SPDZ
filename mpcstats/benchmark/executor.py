@@ -2,14 +2,13 @@
 
 from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
-mpcstats_dir = repo_root / 'mpcstats'
-benchmark_dir = mpcstats_dir / 'benchmark'
 
 import sys
 sys.path.append(str(repo_root))
 sys.path.append(f'{repo_root}/mpcstats')
 
-from common_lib import execute_silently, exec_subprocess, DIMENTION_FILE, read_script
+from common_lib import execute_silently, exec_subprocess, DIMENTION_FILE, read_script, mpcstats_dir, benchmark_dir
+
 from output_parser import parse_execution_output
 from constants import PROG_NAME, PROTOCOL, RESULT
 from Compiler.types import sfix, Matrix

@@ -2,7 +2,12 @@
 
 from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
-datasets_dir = repo_root / 'mpcstats' / 'benchmark' / 'datasets'
+
+import sys
+sys.path.append(str(repo_root))
+sys.path.append(f'{repo_root}/mpcstats')
+
+from common_lib import datasets_dir
 
 import os
 import shutil

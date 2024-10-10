@@ -2,10 +2,12 @@
 
 from pathlib import Path
 repo_root = Path(__file__).parent.parent.parent
-benchmark_dir = repo_root / 'mpcstats' / 'benchmark'
 
 import sys
-sys.path.append(f'{repo_root}/mpcstats/benchmark')
+sys.path.append(str(repo_root))
+sys.path.append(f'{repo_root}/mpcstats')
+
+from common_lib import benchmark_dir
 
 import subprocess
 import os
