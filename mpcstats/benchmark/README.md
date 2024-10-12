@@ -45,6 +45,13 @@ scp *.pem pse-asia:MP-SPDZ/mpcstats/benchmark/Player-Data
 scp *.key pse-asia:MP-SPDZ/mpcstats/benchmark/Player-Data
 ```
 
+Fianlly, call `c_rehash` on the machines to which the pem/key files are copied
+
+```
+c_rehash MP-SPDZ/mpcstats/benchmark/Player-Data
+```
+
+
 ## Running the benchmark
 Execute the `./driver.py [scenario ID]` to run the benchmarks and output the results as a CSV to stdout.
 
