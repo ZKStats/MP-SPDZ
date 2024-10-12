@@ -70,28 +70,27 @@ cd MP-SPDZ
 git checkout benchmarker
 ```
 
-1. On each party instance, create `~/.ssh/config` of the following contents:
+- Copy `*.so` files
+Copy `MP-SPDZ/libFHE.so` amd `MPSPDZ/libSPDZ.so` to the new remote machine
+
+- Copy `*.x` files
+Copy `MP-SPDZ/*.x` to the new remote machine
+
+- Add `*.so` files to the library search path
+Add `export LD_LIBRARY_PATH=<MP-SPDZ directory>` to `.bashrc` or a similar configuration file
+
+### Preparing HOSTS file
+Create `MP-SPDZ/HOSTS` of the following contents:
 
 ```
-Host p0
-  HostName 3.107.77.187
-  User ubuntu
-  IdentityFile ~/party0.pem
-  IdentitiesOnly yes
-  Port 22
-Host p1
-  HostName 3.26.224.96
-  User ubuntu
-  IdentityFile ~/party1.pem
-  IdentitiesOnly yes
-  Port 22
-Host p2
-  HostName 3.107.161.167
-  User ubuntu
-  IdentityFile ~/party2.pem
-  IdentitiesOnly yes
-  Port 22
+<Party 0 IP>
+<Party 1 IP>
+<Party 2 IP>
+...
 ```
 
-2. Copy `.pem` files to the home directory of each party instance
+Also make sure that you use correct party number on each party machine.
 
+For example, if you use party number 1 on party-2 machine, MPC will not function. Each party has an assigned port number that is the base port number + party number.
+
+In such a case, if the base port number is the default 5000, party 2 will try to connect to itself using port 5001, but the vm is listening to port 5002 on part-2 machine.
