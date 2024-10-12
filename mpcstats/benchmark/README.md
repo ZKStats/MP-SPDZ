@@ -70,17 +70,6 @@ cd MP-SPDZ
 git checkout benchmarker
 ```
 
-- Generate ssl keys and distribute to all parties
-
-```
-cd MP-SPDZ/mpcstats/benchmark
-../../Scripts/setup-ssl.sh 3
-```
-
-Then copy `PlayerData/P*.pem` and `PlayerData/P*.key` to the same location in other instances
-
-- Make parties accssible to other parties without password
-
 1. On each party instance, create `~/.ssh/config` of the following contents:
 
 ```
