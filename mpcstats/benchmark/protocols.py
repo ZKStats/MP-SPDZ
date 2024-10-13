@@ -12,11 +12,11 @@ dishonest_majority_covert = [t + ('DM-C-SS',) for t in [
 ]]
 
 dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
-('semi', 'semi-party.x', ''), # ok
-('semi2k', 'semi2k-party.x', '--ring 128'), # ok
-('hemi', 'hemi-party.x', ''), # ok
-('temi', 'temi-party.x', ''), # ok
-('soho', 'soho-party.x', ''), # ok
+# ('semi', 'semi-party.x', ''), # ok
+# ('semi2k', 'semi2k-party.x', '--ring 128'), # ok
+# ('hemi', 'hemi-party.x', ''), # ok
+# ('temi', 'temi-party.x', ''), # ok
+# ('soho', 'soho-party.x', ''), # ok
 ]]
 
 honest_majority_malicious = [t + ('HM-M',) for t in [
