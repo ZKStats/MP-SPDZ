@@ -20,7 +20,9 @@ for socket in client.sockets:
     os.Send(socket)
 
 def run(x):
-    client.send_private_inputs([x])
+    client.send_private_inputs([x, 19025386729892471294905774323873829730555352566281815376957579075809073893907])
+    # client.send_private_inputs([x,3030918970555839371,6351928071260488773, 16545997817213844656, 3833218938854117907 ])
+    #client.send_private_inputs([x])
     print("finish sending private inputs")
     # print('Winning client id is :', client.receive_outputs(1)[0])
 

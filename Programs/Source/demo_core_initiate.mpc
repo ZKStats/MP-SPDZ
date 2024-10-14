@@ -17,9 +17,12 @@ def main():
     # put as array to make it object
     # First element is the number of clients
     client_values = sint.Array(1 + MAX_NUM_CLIENTS)
+    commitment_values = sint.Array(MAX_NUM_CLIENTS)
+
     print_ln('storing number of values: 0')
     client_values[0] = sint(0)
     client_values.write_to_file(0)
+    commitment_values.write_to_file(1+MAX_NUM_CLIENTS)
     print_ln('Done initiating client_values')
 
 main()

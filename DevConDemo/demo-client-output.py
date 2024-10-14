@@ -10,6 +10,7 @@ from domains import *
 client_id = int(sys.argv[1])
 n_parties = int(sys.argv[2])
 computationIndex = int(sys.argv[3])
+MAX_NUM_CLIENTS = 10
 
 
 client = Client(['localhost'] * n_parties, 14000, client_id)
@@ -21,12 +22,10 @@ for socket in client.sockets:
     os.Send(socket)
 
 def run():
-    output_list = client.receive_outputs(5)
+    output_list = client.receive_outputs(1+MAX_NUM_CLIENTS)
     print('Computation index',computationIndex, "is", output_list[0])
-    print('lsb', output_list[1])
-    print('next', output_list[2])
-    print('next', output_list[3])
-    print('msb', output_list[4])
+    for i in range(MAX_NUM_CLIENTS):
+        print('commitment: ',i, 'is', output_list[i+1])
     # print('commitment index is', client.receive_outputs(2)[1])
 
 # running two rounds
