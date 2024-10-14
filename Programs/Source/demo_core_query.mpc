@@ -62,7 +62,6 @@ def main():
     result = computation(computationIndex, client_values)
 
     
-    
     print_ln('query computation index: %s is %s', computationIndex, result[0].reveal())
     
     #sint.reveal_to_clients([client_socket_id], result)
@@ -71,12 +70,6 @@ def main():
     @for_range(MAX_NUM_CLIENTS)
     def _(i):
         return_array[1+i] = commitment_values[i]
-
-    #return_array[0] = result[0]
-    #return_array[1]= sint_commitment_0_first
-    #return_array[2]= sint_commitment_0_second
-    #return_array[3]= sint_commitment_0_third
-    #return_array[4]= sint_commitment_0_fourth
     
     return_array.reveal_to_clients([client_socket_id])
 

@@ -23,7 +23,7 @@ def client_input(t: Type[sint], client_socket_id: regint):
     Send share of random value, receive input and deduce share.
     """
     received = t.receive_from_client(2, client_socket_id)
-    return received[0], sbitvec(received[1], 256).reverse_bytes()
+    return received[0], sbitvec(received[1], 256)
 
 def calculate_data_commitment(num_bytes_followers: int, followers:sint, delta: sbitvec, encoding: list[sbitvec], nonce: sbitvec):
     # Adjust based on data_type
@@ -59,7 +59,6 @@ def main():
     client_values = sint.Array(1 + MAX_NUM_CLIENTS)
     commitment_values = sint.Array(MAX_NUM_CLIENTS)
 
-
     final_client_values_loc = client_values.read_from_file(0)
     print_ln('final_client_values_loc: %s', final_client_values_loc.reveal())
     print_ln('client_values: before update: %s', [client_values[i].reveal() for i in range(MAX_NUM_CLIENTS + 1)])
@@ -74,7 +73,6 @@ def main():
 
     client_socket_id = accept_client()
     print_ln('client_socket_id: %s', client_socket_id)
-
 
     @if_(client_socket_id >= MAX_NUM_CLIENTS)
     def _():
@@ -94,19 +92,11 @@ def main():
     
 
     # nonce must be secret_shared
-    #input_nonce = sbitvec.from_vec([ele for ele in input_nonces_64_0]+[ele for ele in input_nonces_64_1]+[ele for ele in input_nonces_64_2]+[ele for ele in input_nonces_64_3])
-    #input_nonce = sbitvec.from_hex('2a0ffcbec6f9338b582694ed46504445e59f3159ad6b7cb035325450ccb31213')
     # Hardcode 1 as byte of this input
     input_commitment = calculate_data_commitment(1, input_value, input_delta, input_zero_encodings, input_nonce)
     print_ln('commitment_0 hex: ')
     input_commitment.reveal_print_hex()
-    input_commitment = input_commitment.reverse_bytes()
-
-    #input_commitments_64 = sint.Array(4)
-    #input_commitments_64[0] = sint.bit_compose(input_commitment[0:64])
-    #input_commitments_64[1] = sint.bit_compose(input_commitment[64:128])
-    #input_commitments_64[2] = sint.bit_compose(input_commitment[128:192])
-    #input_commitments_64[3] = sint.bit_compose(input_commitment[192:256])
+    input_commitment = input_commitment
 
 
     commitment_values[client_socket_id] = input_commitment
