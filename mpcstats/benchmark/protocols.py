@@ -1,14 +1,14 @@
 dishonest_majority_malicious = [t + ('DM-M-SS',) for t in [
-# ('mascot', 'mascot-party.x', ''), # ok
-# ('mama', 'mama-party.x', ''), # ok
-# ('spdz2k', 'spdz2k-party.x', '--ring 128'), # ok slow
-# ('lowgear', 'lowgear-party.x', ''), # ok? slow
-# ('highgear', 'highgear-party.x', ''), # ok? slow
+('mascot', 'mascot-party.x', ''), # ok
+('mama', 'mama-party.x', ''), # ok
+('spdz2k', 'spdz2k-party.x', '--ring 128'), # ok slow
+('lowgear', 'lowgear-party.x', ''), # ok? slow
+('highgear', 'highgear-party.x', ''), # ok? slow
 ]]
 
 dishonest_majority_covert = [t + ('DM-C-SS',) for t in [
-# ('cowgear', 'cowgear-party.x', ''), # ok
-# ('chaigear', 'chaigear-party.x', ''), # ok slow
+('cowgear', 'cowgear-party.x', ''), # ok
+('chaigear', 'chaigear-party.x', ''), # ok slow
 ]]
 
 dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
@@ -20,14 +20,14 @@ dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
 ]]
 
 honest_majority_malicious = [t + ('HM-M',) for t in [
-# ('ring', 'replicated-ring-party.x', '--ring 128'), # ok
-# ('ps-rep-ring', 'ps-rep-ring-party.x', '--ring 128'), # ok
-# ('mal-rep-ring', 'malicious-rep-ring-party.x', '--ring 128'), # ok
-# ('sy-rep-ring', 'sy-rep-ring-party.x', '--ring 128'), # ok
-# # ('rep4-ring', 'rep4-ring-party.x', '--ring 128'), # ok, ssl, 4 parties
-# ('ps-rep-field', 'ps-rep-field-party.x', ''), # ok
-# ('sy-rep-field', 'sy-rep-field-party.x', ''), # ok
-# ('mal-rep-field', 'malicious-rep-field-party.x', ''), # ok
+('ring', 'replicated-ring-party.x', '--ring 128'), # ok
+('ps-rep-ring', 'ps-rep-ring-party.x', '--ring 128'), # ok
+('mal-rep-ring', 'malicious-rep-ring-party.x', '--ring 128'), # ok
+('sy-rep-ring', 'sy-rep-ring-party.x', '--ring 128'), # ok
+# ('rep4-ring', 'rep4-ring-party.x', '--ring 128'), # ok, ssl, 4 parties
+('ps-rep-field', 'ps-rep-field-party.x', ''), # ok
+('sy-rep-field', 'sy-rep-field-party.x', ''), # ok
+('mal-rep-field', 'malicious-rep-field-party.x', ''), # ok
 ('mal-shamir', 'malicious-shamir-party.x', ''), # ok
 ('sy-shamir', 'sy-shamir-party.x', ''), # ok
 ]]

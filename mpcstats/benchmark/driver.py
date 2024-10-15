@@ -51,7 +51,8 @@ headers = [
 scenarios = [
     ['all'],
     ['test'],
-    ['mean'],
+    ['mean_mn'],
+    ['mean_no_mn'],
     ['where'],
     ['join'],
     ['tlsn'],
