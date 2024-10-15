@@ -20,22 +20,22 @@ dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
 ]]
 
 honest_majority_malicious = [t + ('HM-M',) for t in [
-# ('ring', 'replicated-ring-party.x', '--ring 128'), # ok
+('ring', 'replicated-ring-party.x', '--ring 128'), # ok
 # ('ps-rep-ring', 'ps-rep-ring-party.x', '--ring 128'), # ok
 # ('mal-rep-ring', 'malicious-rep-ring-party.x', '--ring 128'), # ok
 # ('sy-rep-ring', 'sy-rep-ring-party.x', '--ring 128'), # ok
 # # ('rep4-ring', 'rep4-ring-party.x', '--ring 128'), # ok, ssl, 4 parties
-('ps-rep-field', 'ps-rep-field-party.x', ''), # ok
-('sy-rep-field', 'sy-rep-field-party.x', ''), # ok
-('mal-rep-field', 'malicious-rep-field-party.x', ''), # ok
-('mal-shamir', 'malicious-shamir-party.x', ''), # ok
-('sy-shamir', 'sy-shamir-party.x', ''), # ok
+# ('ps-rep-field', 'ps-rep-field-party.x', ''), # ok
+# ('sy-rep-field', 'sy-rep-field-party.x', ''), # ok
+# ('mal-rep-field', 'malicious-rep-field-party.x', ''), # ok
+# ('mal-shamir', 'malicious-shamir-party.x', ''), # ok
+# ('sy-shamir', 'sy-shamir-party.x', ''), # ok
 ]]
 
 honest_majority_non_malicious = [t + ('HM-NM',) for t in [
-('rep-field', 'replicated-field-party.x', ''), # ok
-('atlas', 'atlas-party.x', ''), # ok
-('shamir', 'shamir-party.x', ''), # ok
+# ('rep-field', 'replicated-field-party.x', ''), # ok
+# ('atlas', 'atlas-party.x', ''), # ok
+# ('shamir', 'shamir-party.x', ''), # ok
 ]]
 
 # ################################
