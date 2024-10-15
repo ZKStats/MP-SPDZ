@@ -96,13 +96,12 @@ def main():
     input_commitment = calculate_data_commitment(1, input_value, input_delta, input_zero_encodings, input_nonce)
     print_ln('commitment_0 hex: ')
     input_commitment.reveal_print_hex()
-    input_commitment = input_commitment
 
 
     commitment_values[client_socket_id] = input_commitment
     commitment_values.write_to_file(1+MAX_NUM_CLIENTS)
     print_ln('commitment_values: after  update: %s', [commitment_values[i].reveal() for i in range(MAX_NUM_CLIENTS)])
-    
+    sint.reveal_to_clients([client_socket_id],[commitment_values[client_socket_id]])
     print_ln('Now closing this connection')
     print_ln('num clients: %s', client_values[0].reveal())
     closeclientconnection(client_socket_id)

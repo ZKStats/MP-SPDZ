@@ -9,8 +9,7 @@ from domains import *
 
 client_id = int(sys.argv[1])
 n_parties = int(sys.argv[2])
-# isInput = int(sys.argv[3])
-bonus = int(sys.argv[3])
+input_value = int(sys.argv[3])
 
 client = Client(['localhost'] * n_parties, 14000, client_id)
 
@@ -19,6 +18,8 @@ for socket in client.sockets:
     os.store(0)
     os.Send(socket)
 
+def hex_to_int(hex):
+    return int(hex, 16)
 def reverse_bytes(integer):
     # Convert integer to bytes, assuming it is a 32-bit integer (4 bytes)
     byte_length = (integer.bit_length() + 7) // 8 or 1
@@ -33,12 +34,12 @@ def reverse_bytes(integer):
     return reversed_integer
 
 def run(x):
-    nonce = 19025386729892471294905774323873829730555352566281815376957579075809073893907
-    client.send_private_inputs([x, reverse_bytes(nonce)])
+    nonce = "2a0ffcbec6f9338b582694ed46504445e59f3159ad6b7cb035325450ccb31213"
+    client.send_private_inputs([x, reverse_bytes(hex_to_int(nonce))])
     print("finish sending private inputs")
-    # print('Winning client id is :', client.receive_outputs(1)[0])
-
+    output = client.receive_outputs(1)[0]
+    print("commitment: ", hex(reverse_bytes(output)))
 # running two rounds
 # first for sint, then for sfix
-run(bonus)
+run(input_value)
 # run(bonus * 2 ** 16)
