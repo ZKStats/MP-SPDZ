@@ -56,16 +56,6 @@ def parse_args() -> Any:
         action='store_true',
         help='Use edaBit',
     )
-    parser.add_argument(
-        '--optimize-hard',
-        action='store_true',
-        help='Set --optimize-hard flag',
-    )
-    parser.add_argument(
-        '--flow-optimization',
-        action='store_true',
-        help='Set --flow-optimizationflag',
-    )
     return parser.parse_args()
 
 args = parse_args()
@@ -79,6 +69,9 @@ prepare_data() # from computation definition script
 # compile the computation
 def f():
     flags = []
+        '--optimize-hard',
+        '--flow-optimization',
+    ]
     if args.edabit:
         flags.append('--edabit')
     if args.binary:
@@ -88,10 +81,6 @@ def f():
     if args.ring:
         flags.append('--ring')
         flags.append(args.ring)
-    if args.optimize_hard:
-        flags.append('--optimize-hard')
-    if args.flow_optimization:
-        flags.append('--flow-optimization')
 
     compile_computation(args.name, computation, flags)
 
