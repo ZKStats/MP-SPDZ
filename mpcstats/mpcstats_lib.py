@@ -40,8 +40,20 @@ def print_data(data: Matrix):
 
 
 def _mean(data: list[sfix]) -> (sfix, sfix):
-    total = sfix(sum(if_else(i != MAGIC_NUMBER, i, 0) for i in data))
-    count = sfix(sum(if_else(i != MAGIC_NUMBER, 1, 0) for i in data))
+    data = Array.create_from(data)
+
+    total = sfix(0)
+    @for_range(len(data))
+    def f(i):
+        x = data[i]
+        total.update(total + sfix(if_else(x != MAGIC_NUMBER, x, 0)))
+
+    count = sfix(0)
+    @for_range(len(data))
+    def f(i):
+        x = data[i]
+        count.update(count + sfix(if_else(x != MAGIC_NUMBER, 1, 0)))
+
     return total / count, count
 
 
