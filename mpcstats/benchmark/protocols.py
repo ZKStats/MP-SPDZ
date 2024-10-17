@@ -7,8 +7,8 @@ dishonest_majority_malicious = [t + ('DM-M-SS',) for t in [
 ]]
 
 dishonest_majority_covert = [t + ('DM-C-SS',) for t in [
-('cowgear', 'cowgear-party.x', ''), # ok
-('chaigear', 'chaigear-party.x', ''), # ok slow
+# ('cowgear', 'cowgear-party.x', ''), # ok
+# ('chaigear', 'chaigear-party.x', ''), # ok slow
 ]]
 
 dishonest_majority_semi_honest = [t + ('DM-SH-SS',) for t in [
