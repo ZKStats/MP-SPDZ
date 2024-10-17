@@ -1,5 +1,5 @@
 from common_lib import create_party_data_files, get_aggr_party_data_vecs, write_result, datasets_dir
-from mpcstats_lib import mea
+from mpcstats_lib import mean
 
 NUM_PARTIES = '::NUM_PARTIES::'
 COL_INDEX = 1
