@@ -68,8 +68,8 @@ prepare_data() # from computation definition script
 
 # compile the computation
 def f():
-    flags = []
-    #flags = ['--optimize-hard', '--flow-optimization']
+    #flags = []
+    flags = ['--optimize-hard', '--flow-optimization']
     if args.edabit:
         flags.append('--edabit')
     if args.binary:
